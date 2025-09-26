@@ -1,13 +1,13 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { ChakraProvider } from "@chakra-ui/react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomeMain from "./Pages/Home/HomeMain.tsx";
+import { ChakraProvider, theme } from "@chakra-ui/react";
+import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import HomeMain from "./Pages/Home/HomeMain";
 
 function App() {
 	return (
-		<ChakraProvider>
-			<BrowserRouter>
+		<ChakraProvider theme={theme}>
+			<BrowserRouter basename={process.env.PUBLIC_URL}>
 				<Routes>
 					<Route path="/home" element={<HomeMain />} />
 				</Routes>
