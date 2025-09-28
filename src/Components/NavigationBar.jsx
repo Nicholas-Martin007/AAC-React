@@ -5,7 +5,7 @@ import { usePageStore } from "../Store/usePageStore";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function AppBar() {
+export default function NavigationBar() {
     const { page, isOpen, setPage, setIsOpen } = usePageStore();
     const [isButton, setIsButton] = useState(true);
 
@@ -31,38 +31,37 @@ export default function AppBar() {
 
     return (
         <>
-            {" "}
+            <Box
+                pos="fixed"
+                h={"72px"}
+                w={"360px"}
+                borderBottom="2px"
+                borderColor="gray.200"
+                bg={"white"}
+            />
             <AnimatePresence>
                 <Box
                     pos="fixed"
-                    h={"72px"}
-                    w={"360px"}
-                    borderBottom="2px"
-                    borderColor="gray.200"
-                    bg={"white"}
-                />
-                <motion.div
-                    initial={{ x: -360 }}
-                    animate={{ x: isOpen ? 0 : -360 }}
-                    exit={{ x: -360 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    borderRight="2px"
+                    borderColor={isOpen ? "gray.200" : "transparent"}
+                    w="360px"
+                    h="100vh"
+                    bgColor={isOpen ? "white" : "transparent"}
                 >
-                    <Box
-                        pos="fixed"
-                        borderRight="2px"
-                        borderColor="gray.200"
-                        w="360px"
-                        minH="100vh"
-                        bgColor={"white"}
+                    <motion.div
+                        initial={{ x: -360 }}
+                        animate={{ x: isOpen ? 0 : -360 }}
+                        exit={{ x: -360 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
-                        <Flex
-                            h="72px"
-                            py="15px"
-                            px="24px"
-                            align="center"
-                            justify="flex-end"
-                        >
-                            <Button onClick={() => setIsOpen(false)}>
+                        <Flex h={"72px"} align={"center"} justify={"flex-end"}>
+                            <Button
+                                py="36px"
+                                px="24px"
+                                borderRadius={0}
+                                onClick={() => setIsOpen(false)}
+                                bgColor={"transparent"}
+                            >
                                 <IoMdClose size="28px" />
                             </Button>
                         </Flex>
@@ -76,15 +75,15 @@ export default function AppBar() {
                                 />
                             ))}
                         </Box>
-                    </Box>
-                </motion.div>
+                    </motion.div>
+                </Box>
             </AnimatePresence>
             {isButton && (
                 <Button
                     p={"36px 24px"}
                     onClick={() => setIsOpen(true)}
                     pos={"fixed"}
-                    bgColor={"#346332"}
+                    bgColor={"transparent"}
                     borderRadius={0}
                 >
                     <IoMdMenu size="36px" />
