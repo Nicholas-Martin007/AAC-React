@@ -52,7 +52,7 @@ export default function HomeMain() {
                                 <Box h="24px" />
                                 <Text
                                     align="center"
-                                    fontSize="20px"
+                                    fontSize="18px"
                                     letterSpacing="2px"
                                 >
                                     Tjokro Aminoto
@@ -89,12 +89,34 @@ export default function HomeMain() {
                         <Box
                             key={i}
                             m={"16px 16px 0px 16px"}
-                            w="160px"
+                            w="120px"
                             h="160px"
-                            bg="rebeccapurple"
                             flexShrink={0}
                             onClick={handleBoxClick}
-                        />
+                        >
+                            <Flex
+                                w="100%"
+                                h="100%"
+                                bgColor={"white"}
+                                borderRadius={8}
+                                flexDirection="column"
+                                justifyContent="flex-end"
+                                p={2}
+                            >
+                                <Box
+                                    w={"100%"}
+                                    h={"100%"}
+                                    bgColor={"green"}
+                                ></Box>
+                                <Text
+                                    align="center"
+                                    fontSize="14px"
+                                    letterSpacing="1px"
+                                >
+                                    Tjokro Aminoto
+                                </Text>
+                            </Flex>
+                        </Box>
                     ))}
                     <Box
                         w="240px"
