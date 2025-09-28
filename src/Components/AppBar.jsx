@@ -1,43 +1,95 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import MenuButton from "./Button/MenuButton";
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose, IoMdMenu } from "react-icons/io";
+import { usePageStore } from "../Store/usePageStore";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function AppBar() {
-	const menuOptions = () => {};
+    const { page, isOpen, setPage, setIsOpen } = usePageStore();
+    const [isButton, setIsButton] = useState(true);
 
-	return (
-		<>
-			<Box w={"360px"} minH={"100vh"}>
-				<Box
-					px={"20px"}
-					height={"72px"}
-					borderBottom={"2px"}
-					borderColor={"gray.200"}
-				>
-					<Box
-						py={"12px"}
-						h={"100%"}
-						alignContent={"center"}
-						justifyItems={"end"}
-					>
-						<Box p={"12px"}>
-							<IoMdClose size={"28px"} />
-						</Box>
-					</Box>
-				</Box>
-				<Box p={"48px 20px"}>
-					<MenuButton title={"Home"} link={"link"} />
-					<MenuButton title={"Custom"} link={"link"} />
-					<MenuButton title={"History"} link={"link"} />
-					<MenuButton
-						title={"About"}
-						link={"link"}
-						isBorder={false}
-					/>
-				</Box>
-			</Box>
-		</>
-	);
+    useEffect(() => {
+        setPage([
+            { title: "Home", link: "/Home" },
+            { title: "Custom", link: "/Custom" },
+            { title: "History", link: "/History" },
+            { title: "About", link: "/About", isBorder: false },
+        ]);
+    }, []);
+
+    useEffect(() => {
+        if (isOpen) {
+            setIsButton(false);
+        } else {
+            const timer = setTimeout(() => {
+                setIsButton(true);
+            }, 250);
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen]);
+
+    return (
+        <>
+            {" "}
+            <AnimatePresence>
+                <Box
+                    pos="fixed"
+                    h={"72px"}
+                    w={"360px"}
+                    borderBottom="2px"
+                    borderColor="gray.200"
+                    bg={"white"}
+                />
+                <motion.div
+                    initial={{ x: -360 }}
+                    animate={{ x: isOpen ? 0 : -360 }}
+                    exit={{ x: -360 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                    <Box
+                        pos="fixed"
+                        borderRight="2px"
+                        borderColor="gray.200"
+                        w="360px"
+                        minH="100vh"
+                        bgColor={"white"}
+                    >
+                        <Flex
+                            h="72px"
+                            py="15px"
+                            px="24px"
+                            align="center"
+                            justify="flex-end"
+                        >
+                            <Button onClick={() => setIsOpen(false)}>
+                                <IoMdClose size="28px" />
+                            </Button>
+                        </Flex>
+                        <Box p="48px 20px">
+                            {page.map((menu, i) => (
+                                <MenuButton
+                                    key={i}
+                                    title={menu.title}
+                                    link={menu.link}
+                                    isBorder={menu.isBorder}
+                                />
+                            ))}
+                        </Box>
+                    </Box>
+                </motion.div>
+            </AnimatePresence>
+            {isButton && (
+                <Button
+                    p={"36px 24px"}
+                    onClick={() => setIsOpen(true)}
+                    pos={"fixed"}
+                    bgColor={"#346332"}
+                    borderRadius={0}
+                >
+                    <IoMdMenu size="36px" />
+                </Button>
+            )}
+        </>
+    );
 }
-
-// #1a7f37
