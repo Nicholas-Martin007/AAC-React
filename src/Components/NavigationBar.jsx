@@ -6,89 +6,81 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function NavigationBar() {
-    const { page, isOpen, setPage, setIsOpen } = usePageStore();
-    const [isButton, setIsButton] = useState(true);
+	const { page, isOpen, setPage, setIsOpen } = usePageStore();
+	const [isButton, setIsButton] = useState(true);
 
-    useEffect(() => {
-        setPage([
-            { title: "Home", link: "/Home" },
-            { title: "Custom", link: "/Custom" },
-            { title: "History", link: "/History" },
-            { title: "About", link: "/About", isBorder: false },
-        ]);
-    }, []);
+	useEffect(() => {
+		setPage([
+			{ title: "Home", link: "/Home" },
+			{ title: "Custom", link: "/Custom" },
+			{ title: "History", link: "/History" },
+			{ title: "About", link: "/About", isBorder: false },
+		]);
+	}, []);
 
-    useEffect(() => {
-        if (isOpen) {
-            setIsButton(false);
-        } else {
-            const timer = setTimeout(() => {
-                setIsButton(true);
-            }, 250);
-            return () => clearTimeout(timer);
-        }
-    }, [isOpen]);
+	useEffect(() => {
+		if (isOpen) {
+			setIsButton(false);
+		} else {
+			const timer = setTimeout(() => {
+				setIsButton(true);
+			}, 250);
+			return () => clearTimeout(timer);
+		}
+	}, [isOpen]);
 
-    return (
-        <>
-            <Box
-                pos="fixed"
-                h={"72px"}
-                w={"360px"}
-                borderBottom="2px"
-                borderColor="gray.200"
-                bg={"white"}
-            />
-            <AnimatePresence>
-                <Box
-                    pos="fixed"
-                    borderRight="2px"
-                    borderColor={isOpen ? "gray.200" : "transparent"}
-                    w="360px"
-                    h="100vh"
-                    bgColor={isOpen ? "white" : "transparent"}
-                >
-                    <motion.div
-                        initial={{ x: -360 }}
-                        animate={{ x: isOpen ? 0 : -360 }}
-                        exit={{ x: -360 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                        <Flex h={"72px"} align={"center"} justify={"flex-end"}>
-                            <Button
-                                py="36px"
-                                px="24px"
-                                borderRadius={0}
-                                onClick={() => setIsOpen(false)}
-                                bgColor={"transparent"}
-                            >
-                                <IoMdClose size="28px" />
-                            </Button>
-                        </Flex>
-                        <Box p="48px 20px">
-                            {page.map((menu, i) => (
-                                <MenuButton
-                                    key={i}
-                                    title={menu.title}
-                                    link={menu.link}
-                                    isBorder={menu.isBorder}
-                                />
-                            ))}
-                        </Box>
-                    </motion.div>
-                </Box>
-            </AnimatePresence>
-            {isButton && (
-                <Button
-                    p={"36px 24px"}
-                    onClick={() => setIsOpen(true)}
-                    pos={"fixed"}
-                    bgColor={"transparent"}
-                    borderRadius={0}
-                >
-                    <IoMdMenu size="36px" />
-                </Button>
-            )}
-        </>
-    );
+	return (
+		<>
+			<AnimatePresence>
+				<motion.div
+					initial={{ x: -360 }}
+					animate={{ x: isOpen ? 0 : -360 }}
+					exit={{ x: -360 }}
+					transition={{ duration: 0.3, ease: "easeInOut" }}
+				>
+					<Box
+						pos="fixed"
+						borderRight="2px"
+						borderColor={"gray.200"}
+						w="360px"
+						h="100vh"
+						bgColor={"white"}
+					>
+						{" "}
+						<Flex h={"72px"} align={"center"} justify={"flex-end"}>
+							<Button
+								py="36px"
+								px="24px"
+								borderRadius={0}
+								onClick={() => setIsOpen(false)}
+								bgColor={"transparent"}
+							>
+								<IoMdClose size="28px" />
+							</Button>
+						</Flex>
+						<Box m={"48px 20px"}>
+							{page.map((menu, i) => (
+								<MenuButton
+									key={i}
+									title={menu.title}
+									link={menu.link}
+									isBorder={menu.isBorder}
+								/>
+							))}
+						</Box>
+					</Box>
+				</motion.div>
+			</AnimatePresence>
+			{isButton && (
+				<Button
+					p={"38px 24px"}
+					onClick={() => setIsOpen(true)}
+					pos={"fixed"}
+					borderRadius={0}
+				>
+					<IoMdMenu size="36px" />
+				</Button>
+			)}
+		</>
+	);
 }
