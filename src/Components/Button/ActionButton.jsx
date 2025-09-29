@@ -4,6 +4,7 @@ import { colorList } from "../../Settings/ColorSetting";
 export default function ActionButton({ title, icon }) {
 	return (
 		<Button
+			justifyContent="flex-start"
 			w={"100%"}
 			p={"48px 24px 24px 12px"}
 			mx={"8px"}
@@ -13,6 +14,12 @@ export default function ActionButton({ title, icon }) {
 				bg: colorList.darkGreen,
 				color: "white",
 				boxShadow: `-4px 4px ${colorList.green}`,
+			}}
+			_active={{
+				boxShadow: `inset -1px 2px 4px ${colorList.darkGreen}`,
+				transform: "translateX(-1px) translateY(1px)",
+				color: "black",
+				bg: colorList.green,
 			}}
 		>
 			<Flex gap={2} alignItems={"center"}>

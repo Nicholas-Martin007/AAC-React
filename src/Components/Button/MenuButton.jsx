@@ -1,6 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { colorList } from "../../Settings/ColorSetting";
 
 export default function MenuButton({ title, link, isBorder = true }) {
 	return (
@@ -11,7 +12,7 @@ export default function MenuButton({ title, link, isBorder = true }) {
 				borderBottom={"2px"}
 				borderColor={isBorder ? "gray.200" : "transparent"}
 				_hover={{
-					borderColor: "#346332",
+					borderColor: colorList.darkGreen,
 				}}
 				transition={"ease-in-out 0.2s"}
 			>

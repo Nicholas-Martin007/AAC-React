@@ -1,4 +1,4 @@
-import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, SimpleGrid, Spacer, Text } from "@chakra-ui/react";
 import MainContainer from "../../Components/Container/MainContainer";
 
 import SelectedCardHome from "./SelectedCardHome";
@@ -13,20 +13,25 @@ export default function HomeMain() {
 				<Box>
 					<SimpleGrid columns={pageStore.isOpen ? 6 : 8}>
 						{Array.from({ length: 48 }).map((_, i) => (
-							<Box
+							<Flex
 								key={i}
-								borderRight="2px"
-								borderBottom="2px"
+								flexDir="column"
+								h="248px"
+								m="12px"
+								p="10px"
+								border="2px"
 								borderColor={colorList.borderGray}
-								h="256px"
-								p="20px"
+								borderRadius="8px"
+								cursor="pointer"
+								_hover={{ borderColor: colorList.darkGreen }}
+								_active={{ transform: "scale(0.995)" }}
+								transition={"ease-in-out 0.1s"}
+								onClick={() =>
+									console.log("Flex button clicked")
+								}
 							>
-								<Box
-									w="160px"
-									h="160px"
-									bgColor={colorList.bgGray}
-								/>
-								<Box h="24px" />
+								<Box w="100%" h="160px" bgColor="gray.100" />
+								<Spacer />
 								<Text
 									align="center"
 									fontSize="18px"
@@ -34,7 +39,7 @@ export default function HomeMain() {
 								>
 									Tjokro Aminoto
 								</Text>
-							</Box>
+							</Flex>
 						))}
 					</SimpleGrid>
 				</Box>

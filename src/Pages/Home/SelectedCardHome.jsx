@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Icon, Spacer, Text } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { colorList } from "../../Settings/ColorSetting";
 import { IoMdRefresh } from "react-icons/io";
@@ -62,25 +62,26 @@ export default function SelectedCardHome() {
 					<Box
 						key={i}
 						m={"16px 4px 0px 16px"}
-						h="172px"
 						flexShrink={0}
 						onClick={handleBoxClick}
 					>
 						<Flex
-							w="100%"
-							h="100%"
-							bgColor={colorList.bgGray}
-							borderRadius={8}
-							flexDirection="column"
-							justifyContent="flex-end"
-							p={2}
+							key={i}
+							flexDir="column"
+							h="170px"
+							m="2px"
+							p="10px"
+							border="2px"
+							borderColor={colorList.borderGray}
+							borderRadius="8px"
+							cursor="pointer"
+							_hover={{ borderColor: colorList.darkGreen }}
+							_active={{ transform: "scale(0.995)" }}
+							transition={"ease-in-out 0.1s"}
+							onClick={() => console.log("Flex button clicked")}
 						>
-							<Box
-								w={"120px"}
-								h={"120px"}
-								bgColor={colorList.white}
-							></Box>
-							<Box h="24px" />
+							<Box w="100%" h="120px" bgColor="gray.100" />
+							<Box h={"24px"} />
 							<Text
 								align="center"
 								fontSize="14px"

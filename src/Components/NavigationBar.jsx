@@ -32,21 +32,20 @@ export default function NavigationBar() {
 	return (
 		<>
 			<AnimatePresence>
-				<motion.div
-					initial={{ x: -360 }}
-					animate={{ x: isOpen ? 0 : -360 }}
-					exit={{ x: -360 }}
-					transition={{ duration: 0.3, ease: "easeInOut" }}
-				>
-					<Box
-						pos="fixed"
-						borderRight="2px"
-						borderColor={"gray.200"}
-						w="360px"
-						h="100vh"
-						bgColor={"white"}
+				{isOpen && (
+					<motion.div
+						initial={{ x: -360 }}
+						animate={{ x: 0 }}
+						exit={{ x: -360 }}
+						transition={{ duration: 0.3, ease: "easeInOut" }}
+						style={{
+							position: "fixed",
+							width: "360px",
+							height: "100vh",
+							backgroundColor: "white",
+							borderRight: "2px solid #E2E8F0",
+						}}
 					>
-						{" "}
 						<Flex h={"72px"} align={"center"} justify={"flex-end"}>
 							<Button
 								py="36px"
@@ -68,8 +67,8 @@ export default function NavigationBar() {
 								/>
 							))}
 						</Box>
-					</Box>
-				</motion.div>
+					</motion.div>
+				)}
 			</AnimatePresence>
 			{isButton && (
 				<Button
@@ -77,6 +76,7 @@ export default function NavigationBar() {
 					onClick={() => setIsOpen(true)}
 					pos={"fixed"}
 					borderRadius={0}
+					bgColor="transparent"
 				>
 					<IoMdMenu size="36px" />
 				</Button>
