@@ -6,7 +6,7 @@ export default function ActionButton({ title, icon }) {
 		<Button
 			justifyContent="flex-start"
 			w={"100%"}
-			p={"48px 24px 24px 12px"}
+			p={"32px 24px 24px 12px"}
 			mx={"8px"}
 			bg={colorList.green}
 			boxShadow={`-2px 2px  ${colorList.darkGreen}`}

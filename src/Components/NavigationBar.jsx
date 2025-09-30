@@ -44,6 +44,7 @@ export default function NavigationBar() {
 							height: "100vh",
 							backgroundColor: "white",
 							borderRight: "2px solid #E2E8F0",
+							zIndex: 2,
 						}}
 					>
 						<Flex h={"72px"} align={"center"} justify={"flex-end"}>
@@ -77,6 +78,7 @@ export default function NavigationBar() {
 					pos={"fixed"}
 					borderRadius={0}
 					bgColor="transparent"
+					zIndex={3}
 				>
 					<IoMdMenu size="36px" />
 				</Button>

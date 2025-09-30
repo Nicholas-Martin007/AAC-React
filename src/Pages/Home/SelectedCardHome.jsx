@@ -2,12 +2,14 @@ import { Box, Button, Flex, Icon, Spacer, Text } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { colorList } from "../../Settings/ColorSetting";
 import { IoMdRefresh } from "react-icons/io";
-import { padding } from "../../Settings/PaddignSetting";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { MdAutoStories, MdRefresh } from "react-icons/md";
 import ActionButton from "../../Components/Button/ActionButton";
+import AACCard from "../../Components/Card/AACCard";
+import { usePageStore } from "../../Store/usePageStore";
 
 export default function SelectedCardHome() {
+	const { isOpen } = usePageStore();
 	const [isDragging, setIsDragging] = useState(false);
 	const [startPos, setStartPos] = useState({ x: 0, scrollLeft: 0 });
 	const containerRef = useRef(null);
@@ -38,8 +40,9 @@ export default function SelectedCardHome() {
 		<Box
 			pos="fixed"
 			bottom="0"
-			h="210px"
+			h="220px"
 			w="100%"
+			pl={isOpen && "360px"}
 			borderTop="2px"
 			borderColor={colorList.darkGreen}
 			bgColor={colorList.white}
@@ -57,65 +60,46 @@ export default function SelectedCardHome() {
 				onTouchStart={(e) => handleDrag(e.touches[0].clientX)}
 				onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
 				onTouchEnd={handleEnd}
+				overflowY={"hidden"}
 			>
 				{Array.from({ length: 15 }).map((_, i) => (
-					<Box
+					<AACCard
 						key={i}
-						m={"16px 4px 0px 16px"}
-						flexShrink={0}
-						onClick={handleBoxClick}
-					>
-						<Flex
-							key={i}
-							flexDir="column"
-							h="170px"
-							m="2px"
-							p="10px"
-							border="2px"
-							borderColor={colorList.borderGray}
-							borderRadius="8px"
-							cursor="pointer"
-							_hover={{ borderColor: colorList.darkGreen }}
-							_active={{ transform: "scale(0.995)" }}
-							transition={"ease-in-out 0.1s"}
-							onClick={() => console.log("Flex button clicked")}
-						>
-							<Box w="100%" h="120px" bgColor="gray.100" />
-							<Box h={"24px"} />
-							<Text
-								align="center"
-								fontSize="14px"
-								letterSpacing="1px"
-							>
-								Tjokro Aminoto
-							</Text>
-						</Flex>
-					</Box>
+						card={{
+							img: "/img/Halo.svg",
+							label: "halo",
+						}}
+						cardHeight="200px"
+						imageHeight="120px"
+						imageWidth="120px"
+						m="10px"
+						p="10px"
+						labelPt={"16px"}
+					/>
 				))}
-				<Box w="308px" h="200px" flexShrink={0} />
+				<Box w="276px" h="200px" flexShrink={0} />
 				<Box
-					w="292px"
-					h="210px"
+					w="276px"
+					h="220px"
 					pos="fixed"
 					bottom="0"
 					right="0"
-					pt={"16px"}
-					pl={"8px"}
-					gap={2}
+					p={"4px"}
 					borderLeft={"2px"}
 					borderTop={"2px"}
 					borderColor={colorList.darkGreen}
 					bgColor={colorList.white}
 				>
-					<Flex h="45%" justify="center" align="center">
+					<Flex h="33%" justify="center" align="center">
 						<ActionButton title={"Reset"} icon={MdRefresh} />
+					</Flex>
+					<Flex h="33%" justify="center" align="center">
 						<ActionButton
 							title={"Suara"}
 							icon={HiMiniSpeakerWave}
 						/>
 					</Flex>
-
-					<Flex h="45%" justify="center" align="center">
+					<Flex h="33%" justify="center" align="center">
 						<ActionButton
 							title={"Buat Kisah Sosial"}
 							icon={MdAutoStories}
