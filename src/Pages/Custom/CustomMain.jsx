@@ -33,8 +33,6 @@ export default function CustomMain({ title, children }) {
 
 		if (!customStore.formData.label.trim()) {
 			newErrors.label = "Label is required";
-		} else if (customStore.formData.label.trim().length < 3) {
-			newErrors.label = "Label must be at least 3 characters";
 		}
 
 		if (!customStore.formData.image) {
@@ -47,17 +45,16 @@ export default function CustomMain({ title, children }) {
 
 	const handleSubmit = () => {
 		if (validateForm()) {
-			// Handle form submission
 			console.log("Form submitted:", customStore.formData);
 			toast({
+				position: "top-right",
 				title: "Success!",
 				description: "Item added successfully",
 				status: "success",
-				duration: 3000,
+				duration: 1000,
 				isClosable: true,
 			});
 
-			// Reset form
 			customStore.setFormData({
 				label: "",
 				image: null,

@@ -60,6 +60,10 @@ export default function SelectedCardHome() {
 		aacCardStore.setSelectedAACCard(result);
 	};
 
+	const resetCard = () => {
+		aacCardStore.setSelectedAACCard([]);
+	};
+
 	const generateSocialStory = async () => {
 		const labels = aacCardStore.selectedAACCard.map((card) => {
 			return card.label;
@@ -136,7 +140,11 @@ export default function SelectedCardHome() {
 					bgColor={colorList.white}
 				>
 					<Flex h="33%" justify="center" align="center">
-						<ActionButton title={"Reset"} icon={MdRefresh} />
+						<ActionButton
+							title={"Reset"}
+							icon={MdRefresh}
+							onClick={() => resetCard()}
+						/>
 					</Flex>
 					<Flex h="33%" justify="center" align="center">
 						<ActionButton

@@ -46,7 +46,7 @@ export default function HomeMain() {
 
 	return (
 		<>
-			<MainContainer title="">
+			<MainContainer isHome={true}>
 				<Box flexShrink={0}>
 					<SimpleGrid columns={pageStore.isOpen ? 6 : 8}>
 						{aacCardStore.aacCard.length === 0 ? (
