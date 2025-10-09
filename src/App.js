@@ -1,8 +1,15 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { ChakraProvider, theme } from "@chakra-ui/react";
-import { BrowserRouter, Navigate, Route, Router, Routes } from "react-router-dom";
+import {
+	BrowserRouter,
+	Navigate,
+	Route,
+	Router,
+	Routes,
+} from "react-router-dom";
 import HomeMain from "./Pages/Home/HomeMain";
+import CustomMain from "./Pages/Custom/CustomMain";
 
 function App() {
 	return (
@@ -10,9 +17,9 @@ function App() {
 			<BrowserRouter basename={process.env.PUBLIC_URL}>
 				<Routes>
 					{/* immediately redirect to /Home */}
-					<Route path="/" element={<Navigate to="/Home" replace />} /> 
+					<Route path="/" element={<Navigate to="/Home" replace />} />
 					<Route path="/Home" element={<HomeMain />} />
-					<Route path="/Custom" element={<HomeMain />} />
+					<Route path="/Custom" element={<CustomMain />} />
 					<Route path="/History" element={<HomeMain />} />
 					<Route path="/About" element={<HomeMain />} />
 				</Routes>

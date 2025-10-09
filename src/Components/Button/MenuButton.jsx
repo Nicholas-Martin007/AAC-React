@@ -1,16 +1,25 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { IoIosArrowForward } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { colorList } from "../../Settings/ColorSetting";
 
 export default function MenuButton({ title, link, isBorder = true }) {
+	const location = useLocation();
+	const isActive = location.pathname === link;
+
 	return (
 		<Link to={link}>
 			<Box
 				py={"24px"}
 				px={"8px"}
 				borderBottom={"2px"}
-				borderColor={isBorder ? "gray.200" : "transparent"}
+				borderColor={
+					isActive
+						? "gray.500"
+						: isBorder
+						? "gray.200"
+						: "transparent"
+				}
 				_hover={{
 					borderColor: colorList.darkGreen,
 				}}
