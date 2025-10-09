@@ -4,6 +4,8 @@ import { IoMdClose, IoMdMenu } from "react-icons/io";
 import { usePageStore } from "../Store/usePageStore";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { colorList } from "../Settings/ColorSetting";
 
 export default function NavigationBar() {
 	const { page, isOpen, setPage, setIsOpen } = usePageStore();
@@ -73,14 +75,29 @@ export default function NavigationBar() {
 			</AnimatePresence>
 			{isButton && (
 				<Button
-					p={"38px 24px"}
+					p={"36px 0px"}
+					m={0}
 					onClick={() => setIsOpen(true)}
 					pos={"fixed"}
 					borderRadius={0}
-					bgColor="transparent"
-					zIndex={3}
+					borderRightRadius={"8px"}
+					left={0}
+					top="50%"
+					bg={colorList.green}
+					boxShadow={`-2px 2px  ${colorList.darkGreen}`}
+					_hover={{
+						bg: colorList.darkGreen,
+						color: "white",
+						boxShadow: `-4px 4px ${colorList.green}`,
+					}}
+					_active={{
+						boxShadow: `inset -1px 2px 4px ${colorList.darkGreen}`,
+						transform: "translateX(-1px) translateY(1px)",
+						color: "black",
+					}}
+					zIndex={2}
 				>
-					<IoMdMenu size="36px" />
+					<BsThreeDotsVertical size="36px" />
 				</Button>
 			)}
 		</>
