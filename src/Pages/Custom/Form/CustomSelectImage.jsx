@@ -11,8 +11,8 @@ import {
 } from "@chakra-ui/react";
 
 import { useState, useRef } from "react";
-import { useCustomStore } from "../../Store/useCustomStore";
-import { colorList } from "../../Settings/ColorSetting";
+import { useCustomStore } from "../../../Store/useCustomStore";
+import { colorList } from "../../../Settings/ColorSetting";
 import { IoMdClose, IoMdImage } from "react-icons/io";
 
 export default function CustomSelectImage({ fileInputRef }) {
@@ -24,8 +24,7 @@ export default function CustomSelectImage({ fileInputRef }) {
 			reader.onloadend = () => {
 				customStore.setFormData({
 					...customStore.formData,
-					image: file,
-					imagePreview: reader.result,
+					image: reader.result,
 				});
 				customStore.setErrors({ ...customStore.errors, image: "" });
 			};
@@ -47,7 +46,6 @@ export default function CustomSelectImage({ fileInputRef }) {
 		customStore.setFormData({
 			...customStore.formData,
 			image: null,
-			imagePreview: null,
 		});
 		if (fileInputRef.current) {
 			fileInputRef.current.value = "";
@@ -63,7 +61,7 @@ export default function CustomSelectImage({ fileInputRef }) {
 						customStore.errors.image ? "red.400" : "gray.400"
 					}
 					borderRadius="8px"
-					h="600px"
+					h="550px"
 					w="500px"
 					display="flex"
 					alignItems="center"
@@ -88,11 +86,11 @@ export default function CustomSelectImage({ fileInputRef }) {
 						display="none"
 					/>
 
-					{customStore.formData.imagePreview ? (
+					{customStore.formData.image ? (
 						<>
 							<Box w="100%" p="16px">
 								<Image
-									src={customStore.formData.imagePreview}
+									src={customStore.formData.image}
 									alt="Preview"
 									w="100%"
 									h="auto"

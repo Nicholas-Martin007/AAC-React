@@ -48,7 +48,11 @@ export default function HomeMain() {
 		<>
 			<MainContainer isHome={true}>
 				<Box flexShrink={0}>
-					<SimpleGrid columns={pageStore.isOpen ? 6 : 8}>
+					<SimpleGrid
+						columns={pageStore.isOpen ? 6 : 8}
+						gap={4}
+						p={4}
+					>
 						{aacCardStore.aacCard.length === 0 ? (
 							<Center>No cards available</Center>
 						) : (

@@ -12,11 +12,9 @@ import {
 import { colorList } from "../../Settings/ColorSetting";
 
 export default function AACCard({ key, card, onClick, cardSize = "small" }) {
-	const m = cardSize == "small" ? "8px" : "12px";
-	const p = cardSize == "small" ? "8px" : "10px";
-	const h = cardSize == "small" ? "196px" : "228px";
-	const cardH = cardSize == "small" ? "120px" : "150px";
-	const w = cardSize == "small" ? "150px" : "160px";
+	const h = cardSize == "small" ? "196px" : "240px";
+	const cardH = cardSize == "small" ? "150px" : "180px";
+	const w = cardSize == "small" ? "150px" : "180px";
 	const fontSize = cardSize == "small" ? "16px" : "18px";
 
 	return (
@@ -24,8 +22,6 @@ export default function AACCard({ key, card, onClick, cardSize = "small" }) {
 			key={key}
 			flexShrink={0}
 			h={h}
-			m={m}
-			p={p}
 			w={w}
 			border="2px solid"
 			borderColor={colorList.borderGray}

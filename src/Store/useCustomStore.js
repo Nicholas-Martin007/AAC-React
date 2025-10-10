@@ -12,13 +12,19 @@ const setFormData = (set, get, value) => {
 	}));
 };
 
+const setMode = (set, get, value) => {
+	set((state) => ({
+		mode: value,
+	}));
+};
+
 export const useCustomStore = create((set, get) => ({
 	errors: {},
 	formData: {
 		label: "",
 		image: null,
-		imagePreview: null,
 	},
+	mode: "view",
 
 	setErrors: (value) => {
 		setErrors(set, get, value);
@@ -26,5 +32,9 @@ export const useCustomStore = create((set, get) => ({
 
 	setFormData: (value) => {
 		setFormData(set, get, value);
+	},
+
+	setMode: (value) => {
+		setMode(set, get, value);
 	},
 }));

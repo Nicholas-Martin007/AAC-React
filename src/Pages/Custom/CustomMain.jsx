@@ -1,175 +1,150 @@
 import {
 	Box,
 	Button,
+	Card,
 	Center,
 	Flex,
-	FormControl,
-	FormLabel,
-	FormErrorMessage,
-	Input,
+	IconButton,
 	SimpleGrid,
+	Spacer,
 	Text,
-	VStack,
-	Icon,
-	Image,
 	useToast,
 } from "@chakra-ui/react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import MainContainer from "../../Components/Container/MainContainer";
 import { usePageStore } from "../../Store/usePageStore";
-import { colorList } from "../../Settings/ColorSetting";
-import { IoMdAdd, IoMdImage, IoMdClose } from "react-icons/io";
-import CustomSelectImage from "./CustomSelectImage";
 import { useCustomStore } from "../../Store/useCustomStore";
+import CustomForm from "./Form/CustomForm";
+import { useAACCardStore } from "../../Store/useAACCardStore";
+import AACCard from "../../Components/Card/AACCard";
+import { colorList } from "../../Settings/ColorSetting";
 
 export default function CustomMain({ title, children }) {
-	const pageStore = usePageStore();
 	const customStore = useCustomStore();
-	const toast = useToast();
+	const pageStore = usePageStore();
+	const aacCardStore = useAACCardStore();
+
 	const fileInputRef = useRef(null);
 
-	const validateForm = () => {
-		const newErrors = {};
+	useEffect(() => {
+		aacCardStore.fetchCards();
+	}, []);
 
-		if (!customStore.formData.label.trim()) {
-			newErrors.label = "Label is required";
-		}
-
-		if (!customStore.formData.image) {
-			newErrors.image = "Please select an image";
-		}
-
-		customStore.setErrors(newErrors);
-		return Object.keys(newErrors).length === 0;
-	};
-
-	const handleSubmit = () => {
-		if (validateForm()) {
-			console.log("Form submitted:", customStore.formData);
-			toast({
-				position: "top-right",
-				title: "Success!",
-				description: "Item added successfully",
-				status: "success",
-				duration: 1000,
-				isClosable: true,
-			});
-
-			customStore.setFormData({
-				label: "",
-				image: null,
-				imagePreview: null,
-			});
-			if (fileInputRef.current) {
-				fileInputRef.current.value = "";
-			}
-		}
-	};
+	useEffect(() => {
+		aacCardStore.fetchCards();
+	}, [customStore.mode]);
 
 	return (
 		<MainContainer>
-			<Center>
-				<Box
-					p="32px"
-					my={"32px"}
-					mx={pageStore.isOpen ? "64px " : "196px"}
-					bgColor={colorList.bgGray}
-					borderRadius="8px"
-				>
-					<SimpleGrid columns={2} spacing={8} h="100%">
-						<CustomSelectImage fileInputRef={fileInputRef} />
-
-						<Box
-							bg={colorList.white}
-							h="600px"
-							borderRadius="12px"
-							p="32px"
+			{customStore.mode === "view" ? (
+				<Box flexShrink={0}>
+					<SimpleGrid
+						columns={pageStore.isOpen ? 6 : 8}
+						gap={4}
+						p={4}
+					>
+						{aacCardStore.aacCard.filter(
+							(item) => item.kategori === "custom"
+						).length === 0 ? (
+							<Center>No cards available</Center>
+						) : (
+							aacCardStore.aacCard
+								.filter((item) => item.kategori === "custom")
+								.map((item, index) => (
+									<Box
+										key={index}
+										position="relative"
+										display="flex"
+										justifyContent="center"
+										alignItems="center"
+									>
+										<AACCard card={item} cardSize="large" />
+										<Flex
+											position="absolute"
+											top="10px"
+											right="10px"
+											zIndex={1}
+											gap={1}
+										>
+											<IconButton
+												size="sm"
+												icon={<EditIcon />}
+												colorScheme="blue"
+												aria-label="Edit"
+												onClick={(e) => {
+													e.stopPropagation();
+													customStore.setMode("edit");
+													console.log(
+														"Edit",
+														item.label
+													);
+												}}
+											/>
+											<IconButton
+												size="sm"
+												icon={<DeleteIcon />}
+												colorScheme="red"
+												aria-label="Delete"
+												onClick={(e) => {
+													e.stopPropagation();
+													console.log(
+														"Delete",
+														item.label
+													);
+												}}
+											/>
+										</Flex>
+									</Box>
+								))
+						)}
+						<Card
+							flexShrink={0}
+							h={"240px"}
+							w={"180px"}
+							border="2px dashed"
+							borderColor={colorList.borderGray}
+							borderRadius="8px"
+							cursor="pointer"
+							bg="gray.50"
+							_hover={{
+								borderColor: colorList.darkGreen,
+								borderStyle: "solid",
+								bg: "green.50",
+							}}
+							_active={{ transform: "scale(0.98)" }}
+							transition="all 0.2s ease"
 							display="flex"
 							flexDir="column"
-							gap="24px"
-							boxShadow="md"
+							alignItems="center"
+							justifyContent="center"
+							gap={2}
+							onClick={() => customStore.setMode("add")}
 						>
-							<Text fontSize="36px" fontWeight="bold">
+							<Text
+								fontSize="64px"
+								fontWeight="200"
+								color={colorList.darkGray}
+							>
+								+
+							</Text>
+							<Text
+								fontSize="16px"
+								fontWeight="500"
+								color={colorList.darkGray}
+							>
 								Add New Card
 							</Text>
-
-							<FormControl
-								isInvalid={customStore.errors.label}
-								flex={1}
-							>
-								<FormLabel
-									fontSize="18px"
-									fontWeight="semibold"
-									mb={3}
-								>
-									Label
-								</FormLabel>
-								<Input
-									placeholder="Enter label"
-									size="lg"
-									fontSize="20px"
-									h="56px"
-									p="16px"
-									borderRadius="8px"
-									borderWidth="2px"
-									value={customStore.formData.label}
-									onChange={(e) => {
-										customStore.setFormData({
-											...customStore.formData,
-											label: e.target.value,
-										});
-										if (customStore.errors.label) {
-											customStore.setErrors({
-												...customStore.errors,
-												label: "",
-											});
-										}
-									}}
-									_focus={{
-										borderColor: colorList.green,
-										boxShadow: `0 0 0 1px ${colorList.green}`,
-									}}
-								/>
-								{customStore.errors.label && (
-									<FormErrorMessage fontSize="14px">
-										{customStore.errors.label}
-									</FormErrorMessage>
-								)}
-							</FormControl>
-
-							<Button
-								justifyContent="center"
-								w="100%"
-								h="64px"
-								bg={colorList.green}
-								boxShadow={`-2px 2px ${colorList.darkGreen}`}
-								_hover={{
-									bg: colorList.darkGreen,
-									color: "white",
-									boxShadow: `-4px 4px ${colorList.green}`,
-								}}
-								_active={{
-									boxShadow: `inset -1px 2px 4px ${colorList.darkGreen}`,
-									transform:
-										"translateX(-1px) translateY(1px)",
-									bg: colorList.green,
-								}}
-								onClick={handleSubmit}
-								leftIcon={<IoMdAdd size="24px" />}
-							>
-								<Text
-									fontSize="24px"
-									fontWeight="semibold"
-									textTransform="uppercase"
-									letterSpacing={1}
-								>
-									Add Card
-								</Text>
-							</Button>
-						</Box>
+						</Card>
 					</SimpleGrid>
+					<Box h={"36px"} />
 				</Box>
-			</Center>
+			) : (
+				<CustomForm
+					fileInputRef={fileInputRef}
+					onCancel={() => customStore.setMode("view")}
+				/>
+			)}
 		</MainContainer>
 	);
 }
