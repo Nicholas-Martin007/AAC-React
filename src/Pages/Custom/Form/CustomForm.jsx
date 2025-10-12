@@ -100,7 +100,7 @@ export default function CustomForm({ fileInputRef }) {
     };
 
     return (
-        <Center>
+        <Center h={"100vh"}>
             <Box
                 p="32px"
                 my={"32px"}
@@ -123,11 +123,11 @@ export default function CustomForm({ fileInputRef }) {
                         color: "black",
                     }}
                     transition="all 0.15s ease"
+                    pb={4}
                 >
                     <IoMdArrowBack size="36px" />
                 </Box>
 
-                <Box height={"10px"} />
                 <SimpleGrid columns={2} spacing={8} h="100%">
                     <CustomSelectImage fileInputRef={fileInputRef} />
 

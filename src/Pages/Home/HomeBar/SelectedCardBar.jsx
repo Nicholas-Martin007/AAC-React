@@ -5,14 +5,17 @@ import AACCard from "../../../Components/Card/AACCard";
 import { usePageStore } from "../../../Store/usePageStore";
 import { useAACCardStore } from "../../../Store/useAACCardStore";
 import { HomeActionButton } from "./HomeActionButton";
+import { useLocation } from "react-router-dom";
 
-export default function SelectedCardBar() {
+export default function SelectedCardBar({ isModalOpen }) {
     const pageStore = usePageStore();
     const aacCardStore = useAACCardStore();
 
     const [isDragging, setIsDragging] = useState(false);
     const [startPos, setStartPos] = useState({ x: 0, scrollLeft: 0 });
     const containerRef = useRef(null);
+
+    const { pathname } = useLocation();
 
     const handleDrag = (clientX) => {
         setIsDragging(true);
@@ -48,6 +51,10 @@ export default function SelectedCardBar() {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    useEffect(() => {
+        aacCardStore.setSelectedAACCard([]);
+    }, [pathname]);
 
     return (
         <Box

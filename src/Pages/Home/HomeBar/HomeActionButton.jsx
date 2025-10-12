@@ -7,6 +7,7 @@ import { colorList } from "../../../Settings/ColorSetting";
 import { MdAutoStories, MdRefresh } from "react-icons/md";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { useSpeech } from "react-text-to-speech";
+import { GENERATE_URL } from "../../../Settings/DatabaseURL";
 
 export function HomeActionButton() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -47,16 +48,16 @@ export function HomeActionButton() {
     };
 
     const generateSocialStory = async () => {
-        const labels = aacCardStore.selectedAACCard.map((card) => {
-            return card.label;
+        const cards = aacCardStore.selectedAACCard.map((card) => {
+            return card.kartu_id;
         });
 
-        console.log(labels);
+        console.log(cards);
 
-        const result = await fetch("http://localhost:8000/api/generate/", {
+        const result = await fetch(GENERATE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ input: labels }),
+            body: JSON.stringify({ kartu_ids: cards }),
         });
         const data = await result.json();
         console.log(data.story);

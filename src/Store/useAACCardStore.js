@@ -63,4 +63,5 @@ export const useAACCardStore = create((set, get) => ({
 	triggerRefresh: () => {
 		set((state) => ({ refresh: !state.refresh }));
 	},
+	
 }));

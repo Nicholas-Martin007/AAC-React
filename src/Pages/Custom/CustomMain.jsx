@@ -20,11 +20,14 @@ import { useAACCardStore } from "../../Store/useAACCardStore";
 import AACCard from "../../Components/Card/AACCard";
 import { colorList } from "../../Settings/ColorSetting";
 import { deleteImage } from "../../utils/deleteImage";
+import { useLocation } from "react-router-dom";
 
 export default function CustomMain({ title, children }) {
     const customStore = useCustomStore();
     const pageStore = usePageStore();
     const aacCardStore = useAACCardStore();
+
+    const { pathname } = useLocation();
 
     const fileInputRef = useRef(null);
 
@@ -32,12 +35,16 @@ export default function CustomMain({ title, children }) {
         aacCardStore.fetchCards();
     }, [aacCardStore.refresh, customStore.mode]);
 
+    useEffect(() => {
+        customStore.setMode("view");
+    }, [pathname]);
+
     return (
         <MainContainer>
             {customStore.mode === "view" ? (
                 <Box>
                     <SimpleGrid
-                        columns={pageStore.isOpen ? 6 : 8}
+                        columns={pageStore.isOpen ? 5 : 7}
                         p={4}
                         spacing={4}
                     >
@@ -55,16 +62,24 @@ export default function CustomMain({ title, children }) {
                                         display="flex"
                                         justifyContent="center"
                                     >
-                                        <AACCard card={item} cardSize="large" />
+                                        <AACCard
+                                            card={item}
+                                            style={{
+                                                h: "300px",
+                                                w: "240px",
+                                                cardH: "220px",
+                                                fontSize: "24px",
+                                            }}
+                                        />
                                         <Flex
                                             position="absolute"
                                             top="10px"
-                                            right="10px"
+                                            right="16px"
                                             zIndex={1}
-                                            gap={1}
+                                            gap={2}
                                         >
                                             <IconButton
-                                                size="sm"
+                                                size="md"
                                                 icon={<EditIcon />}
                                                 colorScheme="green"
                                                 aria-label="Edit"
@@ -79,7 +94,7 @@ export default function CustomMain({ title, children }) {
                                                 }}
                                             />
                                             <IconButton
-                                                size="sm"
+                                                size="md"
                                                 icon={<DeleteIcon />}
                                                 colorScheme="red"
                                                 aria-label="Delete"
@@ -117,8 +132,8 @@ export function AddCardButton({ customStore, onClick }) {
     return (
         <Box display="flex" justifyContent="center">
             <Card
-                h={"240px"}
-                w={"180px"}
+                h={"300px"}
+                w={"240px"}
                 position="relative"
                 border="2px dashed"
                 borderColor={colorList.borderGray}
@@ -134,17 +149,24 @@ export function AddCardButton({ customStore, onClick }) {
                 transition="all 0.2s ease"
                 alignItems="center"
                 justifyContent="center"
-                onClick={() => customStore.setMode("add")}
+                onClick={() => {
+                    customStore.setFormData({
+                        label: "",
+                        image: "",
+                        id: "",
+                    });
+                    customStore.setMode("add");
+                }}
             >
                 <Text
-                    fontSize="64px"
+                    fontSize="84px"
                     fontWeight="200"
                     color={colorList.darkGray}
                 >
                     +
                 </Text>
                 <Text
-                    fontSize="16px"
+                    fontSize="24px"
                     fontWeight="500"
                     color={colorList.darkGray}
                 >

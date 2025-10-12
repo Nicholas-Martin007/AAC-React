@@ -11,18 +11,22 @@ import {
 } from "@chakra-ui/react";
 import { colorList } from "../../Settings/ColorSetting";
 
-export default function AACCard({ key, card, onClick, cardSize = "small" }) {
-    const h = cardSize == "small" ? "196px" : "240px";
-    const cardH = cardSize == "small" ? "150px" : "180px";
-    const w = cardSize == "small" ? "150px" : "180px";
-    const fontSize = cardSize == "small" ? "16px" : "18px";
-
+export default function AACCard({
+    key,
+    card,
+    onClick,
+    style = {
+        h: "196px",
+        cardH: "150px",
+        w: "150px",
+        fontSize: "16px",
+    },
+}) {
     return (
         <Card
             key={key}
-            h={h}
-            w={w}
-            mx="auto"
+            h={style.h}
+            w={style.w}
             border="2px solid"
             borderColor={colorList.borderGray}
             borderRadius="8px"
@@ -37,7 +41,7 @@ export default function AACCard({ key, card, onClick, cardSize = "small" }) {
             <CardBody
                 as={Center}
                 w={"100%"}
-                h={cardH}
+                h={style.cardH}
                 bg="#F5F7F6"
                 borderRadius="8px"
                 p={2}
@@ -52,13 +56,14 @@ export default function AACCard({ key, card, onClick, cardSize = "small" }) {
             </CardBody>
             <Spacer />
             <Text
-                fontSize={fontSize}
+                fontSize={style.fontSize}
                 letterSpacing="2px"
                 align="center"
                 noOfLines={2}
             >
                 {card["label"]}
             </Text>
+            <Box height={"12px"} />
         </Card>
     );
 }

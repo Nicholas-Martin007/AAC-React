@@ -1,4 +1,4 @@
-import logo from "./logo.svg";
+
 import "./App.css";
 import { ChakraProvider, theme } from "@chakra-ui/react";
 import {
@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import HomeMain from "./Pages/Home/HomeMain";
 import CustomMain from "./Pages/Custom/CustomMain";
+import HistoryMain from "./Pages/History/HistoryMain";
 
 function App() {
 	return (
@@ -20,7 +21,7 @@ function App() {
 					<Route path="/" element={<Navigate to="/Home" replace />} />
 					<Route path="/Home" element={<HomeMain />} />
 					<Route path="/Custom" element={<CustomMain />} />
-					<Route path="/History" element={<HomeMain />} />
+					<Route path="/History" element={<HistoryMain />} />
 					<Route path="/About" element={<HomeMain />} />
 				</Routes>
 			</BrowserRouter>
