@@ -41,6 +41,7 @@ export const useAACCardStore = create((set, get) => ({
 	aacCard: [],
 	selectedAACCard: [],
 	socialStories: "",
+	refresh: false, 
 
 	setAACCard: (value) => {
 		setAACCard(set, get, value);
@@ -55,7 +56,11 @@ export const useAACCardStore = create((set, get) => ({
 		setSocialStories(set, get, value);
 	},
 
-	fetchCards: (value) => {
-		fetchCards(set, get, value);
+	fetchCards: async () => {
+		await fetchCards(set, get);
+	},
+
+	triggerRefresh: () => {
+		set((state) => ({ refresh: !state.refresh }));
 	},
 }));

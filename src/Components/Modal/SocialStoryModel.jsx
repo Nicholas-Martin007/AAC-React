@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     Flex,
     Modal,
@@ -13,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useAACCardStore } from "../../Store/useAACCardStore";
 
-export default function SSModal({ isOpen, onClose }) {
+export default function SocialStoryModel({ isOpen, onClose }) {
     const aacCardStore = useAACCardStore();
 
     const listCards = aacCardStore.selectedAACCard

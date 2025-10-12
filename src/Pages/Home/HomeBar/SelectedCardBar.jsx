@@ -1,0 +1,94 @@
+import { Box, Flex } from "@chakra-ui/react";
+import { useRef, useState, useEffect } from "react";
+import { colorList } from "../../../Settings/ColorSetting";
+import AACCard from "../../../Components/Card/AACCard";
+import { usePageStore } from "../../../Store/usePageStore";
+import { useAACCardStore } from "../../../Store/useAACCardStore";
+import { HomeActionButton } from "./HomeActionButton";
+
+export default function SelectedCardBar() {
+    const pageStore = usePageStore();
+    const aacCardStore = useAACCardStore();
+
+    const [isDragging, setIsDragging] = useState(false);
+    const [startPos, setStartPos] = useState({ x: 0, scrollLeft: 0 });
+    const containerRef = useRef(null);
+
+    const handleDrag = (clientX) => {
+        setIsDragging(true);
+        const container = containerRef.current;
+        setStartPos({
+            x: clientX - container.offsetLeft,
+            scrollLeft: container.scrollLeft,
+        });
+    };
+
+    const handleDragMove = (clientX) => {
+        if (!isDragging) return;
+        const container = containerRef.current;
+        const x = clientX - container.offsetLeft;
+        const walk = (x - startPos.x) * 2;
+        container.scrollLeft = startPos.scrollLeft - walk;
+    };
+
+    const handleEnd = () => setIsDragging(false);
+
+    const removeCard = (index) => {
+        const result = aacCardStore.selectedAACCard.filter(
+            (item, i) => i !== index
+        );
+        console.log("Result:");
+        console.log(result);
+        aacCardStore.setSelectedAACCard(result);
+    };
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollY = window.scrollY;
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    return (
+        <Box
+            pos="fixed"
+            top="0"
+            h="220px"
+            w="100%"
+            pl={pageStore.isOpen && "360px"}
+            borderBottom="2px"
+            borderColor={colorList.darkGreen}
+            bgColor={colorList.white}
+        >
+            <Flex
+                flexDir={"row"}
+                ref={containerRef}
+                overflowX="hidden"
+                cursor={isDragging ? "grabbing" : "grab"}
+                userSelect="none"
+                onMouseDown={(e) => handleDrag(e.pageX)}
+                onMouseMove={(e) => handleDragMove(e.pageX)}
+                onMouseUp={handleEnd}
+                onMouseLeave={handleEnd}
+                onTouchStart={(e) => handleDrag(e.touches[0].clientX)}
+                onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
+                onTouchEnd={handleEnd}
+                overflowY={"hidden"}
+                p={2}
+            >
+                <Box position="relative" display="flex" gap={4}>
+                    {aacCardStore.selectedAACCard.map((card, index) => (
+                        <Box key={index}>
+                            <AACCard
+                                card={card}
+                                onClick={() => !isDragging && removeCard(index)}
+                            />
+                        </Box>
+                    ))}
+                </Box>
+                <Box w="276px" h="200px" flexShrink={0} />
+                <HomeActionButton />
+            </Flex>
+        </Box>
+    );
+}
