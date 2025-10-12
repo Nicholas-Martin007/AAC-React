@@ -4,6 +4,7 @@ import {
     Card,
     Center,
     Flex,
+    Heading,
     IconButton,
     SimpleGrid,
     Spacer,
@@ -42,12 +43,10 @@ export default function CustomMain({ title, children }) {
     return (
         <MainContainer>
             {customStore.mode === "view" ? (
-                <Box>
-                    <SimpleGrid
-                        columns={pageStore.isOpen ? 5 : 7}
-                        p={4}
-                        spacing={4}
-                    >
+                <Box p={6}>
+                    <Heading mb={6}>Custom</Heading>
+
+                    <SimpleGrid columns={pageStore.isOpen ? 5 : 7} spacing={4}>
                         {aacCardStore.aacCard.filter(
                             (item) => item.kategori === "custom"
                         ).length === 0 ? (

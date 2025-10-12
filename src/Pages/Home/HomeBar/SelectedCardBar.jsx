@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useDisclosure } from "@chakra-ui/react";
 import { useRef, useState, useEffect } from "react";
 import { colorList } from "../../../Settings/ColorSetting";
 import AACCard from "../../../Components/Card/AACCard";
@@ -7,9 +7,11 @@ import { useAACCardStore } from "../../../Store/useAACCardStore";
 import { HomeActionButton } from "./HomeActionButton";
 import { useLocation } from "react-router-dom";
 
-export default function SelectedCardBar({ isModalOpen }) {
+export default function SelectedCardBar() {
     const pageStore = usePageStore();
     const aacCardStore = useAACCardStore();
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const [isDragging, setIsDragging] = useState(false);
     const [startPos, setStartPos] = useState({ x: 0, scrollLeft: 0 });
@@ -73,7 +75,10 @@ export default function SelectedCardBar({ isModalOpen }) {
                 overflowX="hidden"
                 cursor={isDragging ? "grabbing" : "grab"}
                 userSelect="none"
-                onMouseDown={(e) => handleDrag(e.pageX)}
+                onMouseDown={(e) => {
+                    if (isOpen) return; // block drag
+                    handleDrag(e.pageX);
+                }}
                 onMouseMove={(e) => handleDragMove(e.pageX)}
                 onMouseUp={handleEnd}
                 onMouseLeave={handleEnd}
@@ -94,7 +99,11 @@ export default function SelectedCardBar({ isModalOpen }) {
                     ))}
                 </Box>
                 <Box w="276px" h="200px" flexShrink={0} />
-                <HomeActionButton />
+                <HomeActionButton
+                    isModalOpen={isOpen}
+                    onModalOpen={onOpen}
+                    onModalClose={onClose}
+                />
             </Flex>
         </Box>
     );

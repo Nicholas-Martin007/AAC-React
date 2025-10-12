@@ -14,6 +14,9 @@ import {
 import { useAACCardStore } from "../../Store/useAACCardStore";
 import { useEffect, useRef, useState } from "react";
 import AACCard from "../Card/AACCard";
+import { HiMiniSpeakerWave } from "react-icons/hi2";
+import ActionButton from "../Button/ActionButton";
+import { useSpeech } from "react-text-to-speech";
 
 export default function SocialStoryModel({ isOpen, onClose }) {
     const aacCardStore = useAACCardStore();
@@ -39,6 +42,31 @@ export default function SocialStoryModel({ isOpen, onClose }) {
     };
 
     const handleEnd = () => setIsDragging(false);
+
+    const [textToSpeak, setTextToSpeak] = useState("");
+    const [shouldSpeak, setShouldSpeak] = useState(false);
+
+    const { speechStatus, start, pause, stop } = useSpeech({
+        text: textToSpeak,
+        pitch: 1,
+        rate: 1,
+        volume: 1,
+        lang: "id-ID",
+    });
+    const readStories = () => {
+        const textToRead = aacCardStore.socialStories;
+
+        console.log(textToRead);
+        setTextToSpeak(textToRead);
+        setShouldSpeak(true);
+    };
+
+    useEffect(() => {
+        if (shouldSpeak && textToSpeak) {
+            start();
+            setShouldSpeak(false);
+        }
+    }, [textToSpeak, shouldSpeak]);
 
     return (
         <>
@@ -84,11 +112,48 @@ export default function SocialStoryModel({ isOpen, onClose }) {
                             </Box>
                         </Flex>
 
-                        <Text>Output: {aacCardStore.socialStories}</Text>
+                        <Box
+                            w="100%"
+                            border="2px solid"
+                            borderColor="gray.300"
+                            borderRadius="md"
+                            p={4}
+                            mt={4}
+                            bg="gray.50"
+                        >
+                            <Text
+                                whiteSpace="pre-wrap"
+                                fontSize={"16px"}
+                                letterSpacing={1}
+                            >
+                                {aacCardStore.socialStories}
+                            </Text>
+                        </Box>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button onClick={onClose}>Tutup</Button>
-                    </ModalFooter>
+                    <Flex
+                        justify="space-between"
+                        align="center"
+                        mt={6}
+                        px={6}
+                        py={4}
+                        borderBottomRadius="md"
+                    >
+                        <Button
+                            leftIcon={<HiMiniSpeakerWave />}
+                            colorScheme="green"
+                            onClick={() => readStories()}
+                        >
+                            Dengarkan
+                        </Button>
+
+                        <Button
+                            colorScheme="red"
+                            variant="outline"
+                            onClick={onClose}
+                        >
+                            Tutup
+                        </Button>
+                    </Flex>
                 </ModalContent>
             </Modal>
         </>

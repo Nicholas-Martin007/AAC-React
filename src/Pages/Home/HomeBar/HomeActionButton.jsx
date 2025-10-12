@@ -9,8 +9,7 @@ import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { useSpeech } from "react-text-to-speech";
 import { GENERATE_URL } from "../../../Settings/DatabaseURL";
 
-export function HomeActionButton() {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+export function HomeActionButton({ isModalOpen, onModalOpen, onModalClose }) {
     const [isLoading, setIsLoading] = useState(false);
     const [textToSpeak, setTextToSpeak] = useState("");
     const [shouldSpeak, setShouldSpeak] = useState(false);
@@ -60,9 +59,9 @@ export function HomeActionButton() {
             body: JSON.stringify({ kartu_ids: cards }),
         });
         const data = await result.json();
-        console.log(data.story);
+        console.log(data.output_text);
 
-        aacCardStore.setSocialStories(data.story);
+        aacCardStore.setSocialStories(data.output_text);
     };
 
     return (
@@ -108,11 +107,11 @@ export function HomeActionButton() {
                         setIsLoading(true);
                         await generateSocialStory();
                         setIsLoading(false);
-                        onOpen();
+                        onModalOpen();
                     }}
                 />
             </Flex>
-            <SocialStoryModel isOpen={isOpen} onClose={onClose} />
+            <SocialStoryModel isOpen={isModalOpen} onClose={onModalClose} />
         </Box>
     );
 }

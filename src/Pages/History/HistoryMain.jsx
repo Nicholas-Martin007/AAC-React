@@ -40,7 +40,7 @@ export default function HistoryMain() {
 
                 {/* Header */}
                 <SimpleGrid
-                    templateColumns="120px 2fr 2fr 80px"
+                    templateColumns="150px 2fr 2fr 50px"
                     spacing={4}
                     bg={colorList.darkGreen}
                     p={4}
@@ -62,7 +62,7 @@ export default function HistoryMain() {
                     socialStoryStore.stories.map((item, index) => (
                         <SimpleGrid
                             key={item.kisah_id}
-                            templateColumns="120px 2fr 2fr 80px"
+                            templateColumns="150px 2fr 2fr 50px"
                             spacing={4}
                             p={4}
                             bg={index % 2 === 0 ? "white" : "gray.50"}
@@ -74,7 +74,21 @@ export default function HistoryMain() {
                             alignItems="center"
                             mb={2}
                         >
-                            <Text>{item.date || "N/A"}</Text>
+                            <Text>
+                                {item.created_at
+                                    ? new Date(item.created_at).toLocaleString(
+                                          "id-ID",
+                                          {
+                                              day: "2-digit",
+                                              month: "long",
+                                              year: "numeric",
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                          }
+                                      )
+                                    : "N/A"}
+                            </Text>
+
                             <Flex
                                 gap={2}
                                 w="100%"
