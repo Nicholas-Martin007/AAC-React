@@ -7,61 +7,74 @@ const setLoading = (set, get, value) => {
 		isLoading: value,
 	}));
 };
-const setAACCard = (set, get, value) => {
+
+const setCards = (set, get, value) => {
 	set((state) => ({
-		aacCard: value,
+		cards: value,
 	}));
 };
 
-const setSelectedAACCard = (set, get, value) => {
+const setSelectedCard = (set, get, value) => {
 	set((state) => ({
-		selectedAACCard: value,
+		selectedCard: value,
 	}));
 };
 
-const setSocialStories = (set, get, value) => {
+const setStory = (set, get, value) => {
 	set((state) => ({
-		socialStories: value,
+		story: value,
+	}));
+};
+
+const setKisahId = (set, get, value) => {
+	set((state) => ({
+		kisahId: value,
 	}));
 };
 
 const fetchCards = async (set, get, value) => {
 	const data = await fetchData(KARTU_URL);
-	const cards = data.map((item) => ({
+	const result = data.map((item) => ({
 		kartu_id: item.kartu_id,
 		label: item.label,
 		gambar: item.gambar,
 		kategori: item.kategori,
 	}));
-	set({ aacCard: cards });
+
+	set({ cards: result });
 };
 
-export const useAACCardStore = create((set, get) => ({
+export const useCardStore = create((set, get) => ({
 	isLoading: false,
-	aacCard: [],
-	selectedAACCard: [],
-	socialStories: "",
-	refresh: false, 
+	cards: [],
+	selectedCard: [],
+	story: "",
+	kisahId: null,
 
-	setAACCard: (value) => {
-		setAACCard(set, get, value);
+	refresh: false,
+
+	setCards: (value) => {
+		setCards(set, get, value);
 	},
-	setSelectedAACCard: (value) => {
-		setSelectedAACCard(set, get, value);
+	setSelectedCard: (value) => {
+		setSelectedCard(set, get, value);
 	},
 	setLoading: (value) => {
 		setLoading(set, get, value);
 	},
-	setSocialStories: (value) => {
-		setSocialStories(set, get, value);
+	setStory: (value) => {
+		setStory(set, get, value);
 	},
 
 	fetchCards: async () => {
 		await fetchCards(set, get);
 	},
 
+	setKisahId: (value) => {
+		setKisahId(set, get, value);
+	},
+
 	triggerRefresh: () => {
 		set((state) => ({ refresh: !state.refresh }));
 	},
-	
 }));

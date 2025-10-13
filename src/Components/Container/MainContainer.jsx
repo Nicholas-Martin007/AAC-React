@@ -7,15 +7,6 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export default function MainContainer({ title, children, isHome = false }) {
 	const pageStore = usePageStore();
-	const [isScrolled, setIsScrolled] = useState(false);
-
-	useEffect(() => {
-		const handleScroll = () => {
-			setIsScrolled(window.scrollY > 0);
-		};
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
 	return (
 		<>
 			<NavigationBar />
