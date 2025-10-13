@@ -8,65 +8,55 @@ import { MdAutoStories, MdRefresh } from "react-icons/md";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { useSpeech } from "react-text-to-speech";
 import { GENERATE_URL } from "../../../Settings/DatabaseURL";
-
+import { useSpeakStore } from "../../../Store/useSpeakStore";
 export function HomeActionButton({ isModalOpen, onModalOpen, onModalClose }) {
-	const [isLoading, setIsLoading] = useState(false);
-	const [textToSpeak, setTextToSpeak] = useState("");
-	const [shouldSpeak, setShouldSpeak] = useState(false);
-
 	const cardStore = useCardStore();
+	const speakStore = useSpeakStore();
+	const [isLoading, setIsLoading] = useState(false);
 
-	const resetCard = () => {
-		cardStore.setSelectedCard([]);
-	};
-
-	const { speechStatus, start, pause, stop } = useSpeech({
-		text: textToSpeak,
+	const { speechStatus, start } = useSpeech({
+		text: speakStore.text,
 		pitch: 1,
 		rate: 1,
 		volume: 1,
 		lang: "id-ID",
 	});
 
-	// Trigger speech when text updates
-	useEffect(() => {
-		if (shouldSpeak && textToSpeak) {
-			start();
-			setShouldSpeak(false);
-		}
-	}, [textToSpeak, shouldSpeak]);
-
 	const readCard = () => {
-		const textToRead = cardStore.selectedCard
-			.map((item) => item.label)
-			.join(" ");
-
-		console.log(textToRead);
-		setTextToSpeak(textToRead);
-		setShouldSpeak(true);
+		const text = cardStore.selectedCard.map((item) => item.label).join(" ");
+		speakStore.setText(text);
+		speakStore.setSpeaking(true);
 	};
-	const generateSocialStory = async () => {
+
+	const resetCard = () => {
+		cardStore.setSelectedCard([]);
+	};
+
+	const generateStory = async () => {
 		const cards = cardStore.selectedCard.map((card) => {
 			return card.kartu_id;
 		});
-
-		console.log(cards);
-
-		const result = await fetch(GENERATE_URL, {
+		const data = await fetch(GENERATE_URL, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ kartu_ids: cards }),
 		});
-		const data = await result.json();
-		console.log(data);
 
+		const result = await data.json();
 		cardStore.setStory(data.output_text);
 
-		if (data.kisah_id) {
-			cardStore.setKisahId(data.kisah_id);
-			console.log("Kisah ID saved:", data.kisah_id);
+		if (result.kisah_id) {
+			cardStore.setKisahId(result.kisah_id);
+			console.log("Kisah ID saved:", result.kisah_id);
 		}
 	};
+
+	useEffect(() => {
+		if (speakStore.isSpeaking && speakStore.text) {
+			start();
+			speakStore.setSpeaking(false);
+		}
+	}, [speakStore.text, speakStore.isSpeaking]);
 
 	return (
 		<Box
@@ -109,7 +99,7 @@ export function HomeActionButton({ isModalOpen, onModalOpen, onModalClose }) {
 					icon={MdAutoStories}
 					onClick={async () => {
 						if (cardStore.kar) setIsLoading(true);
-						await generateSocialStory();
+						await generateStory();
 						setIsLoading(false);
 						onModalOpen();
 					}}

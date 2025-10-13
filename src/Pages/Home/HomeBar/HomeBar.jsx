@@ -12,12 +12,11 @@ export default function HomeBar() {
 	const cardStore = useCardStore();
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const { pathname } = useLocation();
 
 	const [isDragging, setIsDragging] = useState(false);
 	const [startPos, setStartPos] = useState({ x: 0, scrollLeft: 0 });
 	const containerRef = useRef(null);
-
-	const { pathname } = useLocation();
 
 	const handleDrag = (clientX) => {
 		setIsDragging(true);
@@ -36,7 +35,9 @@ export default function HomeBar() {
 		container.scrollLeft = startPos.scrollLeft - walk;
 	};
 
-	const handleEnd = () => setIsDragging(false);
+	const handleEnd = () => {
+		setIsDragging(false);
+	};
 
 	const removeCard = (index) => {
 		const result = cardStore.selectedCard.filter((item, i) => i !== index);
@@ -44,13 +45,6 @@ export default function HomeBar() {
 		console.log(result);
 		cardStore.setSelectedCard(result);
 	};
-	useEffect(() => {
-		const handleScroll = () => {
-			const scrollY = window.scrollY;
-		};
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, []);
 
 	useEffect(() => {
 		cardStore.setSelectedCard([]);
