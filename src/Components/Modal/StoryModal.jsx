@@ -13,7 +13,6 @@ import {
 	VStack,
 	Badge,
 	Divider,
-	useToast,
 } from "@chakra-ui/react";
 import { useCardStore } from "../../Store/useCardStore";
 import { useEffect, useRef, useState } from "react";
@@ -22,22 +21,19 @@ import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { useSpeech } from "react-text-to-speech";
 import { addRatings } from "../../utils/addRatings";
+import { colorList } from "../../Settings/ColorSetting";
+import { useNToast } from "../../utils/Toast/NToast";
 
 export default function StoryModal({
 	isOpen,
 	onClose,
-	viewMode = false, // New prop: true for viewing history, false for creating
-	historyData = null, // New prop: data from history
+	viewMode = false,
+	historyData = null,
 }) {
 	const cardStore = useCardStore();
-	const toast = useToast();
-	const [isDragging, setIsDragging] = useState(false);
-	const [startPos, setStartPos] = useState({ x: 0, scrollLeft: 0 });
-	const containerRef = useRef(null);
 	const [humanRating, setHumanRating] = useState(0);
 	const [hoveredStar, setHoveredStar] = useState(0);
 
-	// Use either history data or store data
 	const displayData = viewMode
 		? {
 				cards: historyData?.kartu_list || [],
@@ -48,11 +44,90 @@ export default function StoryModal({
 		  }
 		: {
 				cards: cardStore.selectedCard || [],
-				socialStory: cardStore.socialStories || "",
+				socialStory: cardStore.story || "",
 				perplexityScore: cardStore.perplexityScore || null,
 				kisahId: cardStore.kisahId || null,
 				existingRating: 0,
 		  };
+
+	const showToast = useNToast();
+
+	// Reset rating on open
+	useEffect(() => {
+		if (isOpen) {
+			setHumanRating(displayData.existingRating);
+			setHoveredStar(0);
+		}
+	}, [isOpen, displayData.existingRating]);
+
+	const handleStarClick = async (rating) => {
+		setHumanRating(rating);
+		try {
+			console.log("display: ", JSON.stringify(displayData.kisahId));
+			const success = await addRatings({
+				kisahId: displayData.kisahId,
+				ratings: rating,
+			});
+
+			if (success) {
+				showToast({
+					title: "Berhasil!",
+					description: `Penilaian ${rating} bintang telah disimpan.`,
+					status: "success",
+				});
+				if (historyData) {
+					historyData.score_human = rating; // Update selected story
+				}
+			}
+		} catch (error) {
+			showToast({
+				title: "Gagal",
+				description: "Gagal menyimpan penilaian.",
+				status: "error",
+			});
+			console.error(error);
+		}
+	};
+
+	return (
+		<Modal isOpen={isOpen} onClose={onClose} size="5xl">
+			<ModalOverlay />
+			<ModalContent>
+				<ModalHeader
+					fontSize="3xl"
+					fontWeight="bold"
+					textAlign="center"
+				>
+					{viewMode ? "Detail Kisah Sosial" : "Kisah Sosial"}
+				</ModalHeader>
+				<ModalBody px={6}>
+					<VStack align="stretch" spacing={4}>
+						<CardSection
+							cards={displayData.cards}
+							viewMode={viewMode}
+						/>
+						<Divider />
+						<SocialStorySection story={displayData.socialStory} />
+						<Divider />
+						<EvaluationSection
+							displayData={displayData}
+							humanRating={humanRating}
+							setHoveredStar={setHoveredStar}
+							hoveredStar={hoveredStar}
+							handleStarClick={handleStarClick}
+						/>
+						<CloseButton onClose={onClose} />
+					</VStack>
+				</ModalBody>
+			</ModalContent>
+		</Modal>
+	);
+}
+
+function CardSection({ cards, viewMode }) {
+	const containerRef = useRef(null);
+	const [isDragging, setIsDragging] = useState(false);
+	const [startPos, setStartPos] = useState({ x: 0, scrollLeft: 0 });
 
 	const handleDrag = (clientX) => {
 		setIsDragging(true);
@@ -73,21 +148,64 @@ export default function StoryModal({
 
 	const handleEnd = () => setIsDragging(false);
 
+	return (
+		<Box>
+			<Text fontSize="lg" fontWeight="semibold" mb={3}>
+				Kartu yang dipilih
+			</Text>
+			<Flex
+				flexDir="row"
+				ref={containerRef}
+				overflowX="hidden"
+				cursor={isDragging ? "grabbing" : "grab"}
+				userSelect="none"
+				onMouseDown={(e) => handleDrag(e.pageX)}
+				onMouseMove={(e) => handleDragMove(e.pageX)}
+				onMouseUp={handleEnd}
+				onMouseLeave={handleEnd}
+				onTouchStart={(e) => handleDrag(e.touches[0].clientX)}
+				onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
+				onTouchEnd={handleEnd}
+				overflowY="hidden"
+				p={2}
+				bg="gray.50"
+				borderRadius="lg"
+				border="2px dashed"
+				borderColor="gray.300"
+			>
+				<Box display="flex" gap={4}>
+					{cards.length === 0 ? (
+						<Text color="gray.500">
+							Belum ada kartu yang dipilih
+						</Text>
+					) : (
+						cards.map((card, idx) => (
+							<AACCard
+								key={idx}
+								card={
+									viewMode
+										? {
+												gambar: card.gambar,
+												label: card.label,
+										  }
+										: card
+								}
+							/>
+						))
+					)}
+				</Box>
+			</Flex>
+		</Box>
+	);
+}
+
+function SocialStorySection({ story }) {
 	const [textToSpeak, setTextToSpeak] = useState("");
 	const [shouldSpeak, setShouldSpeak] = useState(false);
-
-	const { speechStatus, start, pause, stop } = useSpeech({
-		text: textToSpeak,
-		pitch: 1,
-		rate: 1,
-		volume: 1,
-		lang: "id-ID",
-	});
+	const { start } = useSpeech({ text: textToSpeak, lang: "id-ID" });
 
 	const readStories = () => {
-		const textToRead = displayData.socialStory;
-		console.log(textToRead);
-		setTextToSpeak(textToRead);
+		setTextToSpeak(story);
 		setShouldSpeak(true);
 	};
 
@@ -96,57 +214,85 @@ export default function StoryModal({
 			start();
 			setShouldSpeak(false);
 		}
-	}, [textToSpeak, shouldSpeak]);
+	}, [shouldSpeak, textToSpeak]);
 
-	// Reset rating when modal opens
-	useEffect(() => {
-		if (isOpen) {
-			setHumanRating(displayData.existingRating);
-			setHoveredStar(0);
-		}
-	}, [isOpen, displayData.existingRating]);
+	return (
+		<Box>
+			<Flex justify="space-between" align="center" mb={3}>
+				<Text fontSize="lg" fontWeight="semibold">
+					Kisah Sosial
+				</Text>
+				<Button
+					leftIcon={<HiMiniSpeakerWave />}
+					colorScheme="green"
+					size="sm"
+					onClick={readStories}
+					isDisabled={!story}
+				>
+					Dengarkan
+				</Button>
+			</Flex>
+			<Box
+				border="2px solid"
+				borderColor="gray.300"
+				borderRadius="lg"
+				p={5}
+				bg="gray.50"
+				minH="150px"
+			>
+				<Text whiteSpace="pre-wrap" letterSpacing={1}>
+					{story}
+				</Text>
+			</Box>
+		</Box>
+	);
+}
 
-	const handleStarClick = async (rating) => {
-		if (!displayData.kisahId) {
-			toast({
-				title: "Error",
-				description: "Kisah ID tidak ditemukan.",
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
-			return;
-		}
+function EvaluationSection({
+	displayData,
+	humanRating,
+	hoveredStar,
+	setHoveredStar,
+	handleStarClick,
+}) {
+	return (
+		<>
+			<Text fontSize="lg" fontWeight="bold" textAlign="start">
+				Evaluasi Cerita
+			</Text>
+			<Box
+				bg={"gray.50"}
+				borderRadius="lg"
+				p={5}
+				border="2px solid"
+				borderColor="gray.300"
+			>
+				<Text>
+					Skor Perplexity:{" "}
+					{displayData.perplexityScore?.toFixed(2) || "N/A"}
+				</Text>
+				<Text fontSize="xs" color="gray.600">
+					Skor rendah menunjukkan kisah sosial yang mudah dipahami
+				</Text>
+				<RatingSection
+					humanRating={humanRating}
+					hoveredStar={hoveredStar}
+					setHoveredStar={setHoveredStar}
+					handleStarClick={handleStarClick}
+					displayData={displayData}
+				/>
+			</Box>
+		</>
+	);
+}
 
-		setHumanRating(rating);
-
-		try {
-			const success = await addRatings({
-				kisah_id: displayData.kisahId,
-				ratings: rating,
-			});
-
-			if (success) {
-				toast({
-					title: "Berhasil!",
-					description: `Penilaian ${rating} bintang telah disimpan.`,
-					status: "success",
-					duration: 3000,
-					isClosable: true,
-				});
-			}
-		} catch (error) {
-			toast({
-				title: "Gagal",
-				description: "Gagal menyimpan penilaian.",
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
-			console.error("Error:", error);
-		}
-	};
-
+function RatingSection({
+	humanRating,
+	hoveredStar,
+	setHoveredStar,
+	handleStarClick,
+	displayData,
+}) {
 	const StarRating = () => (
 		<HStack spacing={1}>
 			{[1, 2, 3, 4, 5].map((star) => (
@@ -175,274 +321,83 @@ export default function StoryModal({
 	);
 
 	return (
-		<>
-			<Modal isOpen={isOpen} onClose={onClose} size="5xl">
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader
-						fontSize="3xl"
-						fontWeight="bold"
+		<Box>
+			{humanRating === 0 ? (
+				<Box>
+					<Text
+						fontSize="md"
+						fontWeight="medium"
+						color="gray.700"
+						mb={3}
 						textAlign="center"
-						pb={2}
 					>
-						{viewMode ? "Detail Kisah Sosial" : "Kisah Sosial"}
-					</ModalHeader>
-
-					<ModalBody px={6}>
-						<VStack align="stretch" spacing={4}>
-							{/* Cards Section */}
-							<Box>
-								<Text
-									fontSize="lg"
-									fontWeight="semibold"
-									mb={3}
-									color="blue.600"
-								>
-									📚 Kartu yang Dipilih
-								</Text>
-								<Flex
-									flexDir={"row"}
-									ref={containerRef}
-									overflowX="hidden"
-									cursor={isDragging ? "grabbing" : "grab"}
-									userSelect="none"
-									onMouseDown={(e) => handleDrag(e.pageX)}
-									onMouseMove={(e) => handleDragMove(e.pageX)}
-									onMouseUp={handleEnd}
-									onMouseLeave={handleEnd}
-									onTouchStart={(e) =>
-										handleDrag(e.touches[0].clientX)
-									}
-									onTouchMove={(e) =>
-										handleDragMove(e.touches[0].clientX)
-									}
-									onTouchEnd={handleEnd}
-									overflowY={"hidden"}
-									p={2}
-									bg="gray.50"
-									borderRadius="lg"
-									border="2px dashed"
-									borderColor="gray.300"
-								>
-									<Box
-										position="relative"
-										display="flex"
-										gap={4}
-									>
-										{displayData.cards.length === 0 ? (
-											<Text
-												color="gray.500"
-												fontSize="md"
-											>
-												Belum ada kartu yang dipilih
-											</Text>
-										) : (
-											displayData.cards.map(
-												(card, index) => (
-													<Box key={index}>
-														<AACCard
-															card={
-																viewMode
-																	? {
-																			gambar: card.gambar,
-																			label: card.label,
-																	  }
-																	: card
-															}
-														/>
-													</Box>
-												)
-											)
-										)}
-									</Box>
-								</Flex>
-							</Box>
-
-							<Divider />
-
-							{/* Social Story Section */}
-							<Box>
-								<Flex
-									justify="space-between"
-									align="center"
-									mb={3}
-								>
-									<Text
-										fontSize="lg"
-										fontWeight="semibold"
-										color="purple.600"
-									>
-										📖 Cerita Sosial
-									</Text>
-									<Button
-										leftIcon={<HiMiniSpeakerWave />}
-										colorScheme="green"
-										size="sm"
-										onClick={() => readStories()}
-										isDisabled={!displayData.socialStory}
-									>
-										Dengarkan
-									</Button>
-								</Flex>
-								<Box
-									w="100%"
-									border="2px solid"
-									borderColor="purple.200"
-									borderRadius="lg"
-									p={5}
-									bg="purple.50"
-									minH="150px"
-								>
-									{!displayData.socialStory ? (
-										<Text color="gray.500" fontSize="md">
-											Belum ada cerita sosial yang dibuat
-										</Text>
-									) : (
-										<Text
-											whiteSpace="pre-wrap"
-											fontSize={"16px"}
-											letterSpacing={0.5}
-											lineHeight="tall"
-											color="gray.700"
-										>
-											{displayData.socialStory}
-										</Text>
-									)}
-								</Box>
-							</Box>
-
-							<Divider />
-
-							{/* Evaluation Section */}
-							<Box
-								bg="gradient-to-r"
-								bgGradient="linear(to-r, blue.50, purple.50)"
-								borderRadius="lg"
-								p={5}
-								border="2px solid"
-								borderColor="blue.200"
-							>
-								<VStack align="stretch" spacing={4}>
-									<Text
-										fontSize="lg"
-										fontWeight="bold"
-										color="blue.700"
-										textAlign="center"
-									>
-										📊 Evaluasi Cerita
-									</Text>
-
-									{/* Perplexity Score */}
-									<Box>
-										<HStack justify="space-between" mb={2}>
-											<Text
-												fontSize="md"
-												fontWeight="medium"
-												color="gray.700"
-											>
-												Skor Perplexity:
-											</Text>
-											<Badge
-												colorScheme="blue"
-												fontSize="lg"
-												px={3}
-												py={1}
-												borderRadius="full"
-											>
-												{displayData.perplexityScore?.toFixed(
-													2
-												) || "N/A"}
-											</Badge>
-										</HStack>
-										<Text fontSize="xs" color="gray.600">
-											Skor yang lebih rendah menunjukkan
-											cerita yang lebih mudah dipahami
-										</Text>
-									</Box>
-
-									<Divider borderColor="blue.300" />
-
-									{/* Rating Section */}
-									<Box>
-										{humanRating === 0 ? (
-											<Box>
-												<Text
-													fontSize="md"
-													fontWeight="medium"
-													color="gray.700"
-													mb={3}
-													textAlign="center"
-												>
-													⭐ Beri Penilaian Kamu:
-												</Text>
-												<Flex justify="center" mb={2}>
-													<StarRating />
-												</Flex>
-												<Text
-													fontSize="xs"
-													color="gray.600"
-													textAlign="center"
-													mt={2}
-												>
-													Klik bintang untuk memberi
-													penilaian
-												</Text>
-											</Box>
-										) : (
-											<Box>
-												<Text
-													fontSize="sm"
-													color="green.600"
-													textAlign="center"
-													fontWeight="medium"
-													mb={2}
-												>
-													{viewMode &&
-													displayData.existingRating >
-														0
-														? `Penilaian sebelumnya: ${displayData.existingRating} bintang ⭐`
-														: `Terima kasih! Kamu memberi ${humanRating} bintang ⭐`}
-												</Text>
-												<Flex justify="center">
-													<StarRating />
-												</Flex>
-												<Text
-													fontSize="xs"
-													color="gray.600"
-													textAlign="center"
-													mt={2}
-												>
-													Klik bintang untuk mengubah
-													penilaian
-												</Text>
-											</Box>
-										)}
-									</Box>
-								</VStack>
-							</Box>
-						</VStack>
-					</ModalBody>
-
-					<Flex
-						justify="flex-end"
-						align="center"
-						mt={4}
-						px={6}
-						py={4}
-						borderTop="1px solid"
-						borderColor="gray.200"
+						Beri Penilaian Kamu:
+					</Text>
+					<Flex justify="center" mb={2}>
+						<StarRating />
+					</Flex>
+					<Text
+						fontSize="xs"
+						color="gray.600"
+						textAlign="center"
+						mt={2}
 					>
-						<Button
-							colorScheme="red"
-							variant="outline"
-							onClick={onClose}
-							size="lg"
+						Klik bintang untuk memberi penilaian
+					</Text>
+				</Box>
+			) : (
+				<Box>
+					<Text
+						fontSize="sm"
+						color="green.600"
+						textAlign="center"
+						fontWeight="medium"
+						mb={2}
+					>
+						{displayData.existingRating > 0
+							? `Penilaian sebelumnya: ${displayData.existingRating} bintang ⭐`
+							: `Terima kasih! Kamu memberi ${humanRating} bintang ⭐`}
+					</Text>
+					<Flex justify="center">
+						<StarRating />
+					</Flex>
+					<Text
+						fontSize="xs"
+						color="gray.600"
+						textAlign="center"
+						mt={2}
+					>
+						Klik bintang untuk mengubah penilaian
+					</Text>
+				</Box>
+			)}
+		</Box>
+	);
+}
+
+function CloseButton({ onClose }) {
+	return (
+		<Box>
+			<Flex justify="flex-end">
+				<Button
+					justifyContent="flex-start"
+					px="12px"
+					py="8px"
+					colorScheme="red"
+					bg={colorList.red}
+					onClick={onClose}
+				>
+					<Flex gap={2} alignItems="center">
+						<Text
+							fontSize="16px"
+							fontWeight="semibold"
+							letterSpacing={1}
 						>
 							Tutup
-						</Button>
+						</Text>
 					</Flex>
-				</ModalContent>
-			</Modal>
-		</>
+				</Button>
+			</Flex>
+		</Box>
 	);
 }

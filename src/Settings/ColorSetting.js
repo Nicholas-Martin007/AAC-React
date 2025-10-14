@@ -7,4 +7,7 @@ export const colorList = {
 	darkGray: "#566069",
 	bgGray: "#e8ede9",
 	borderGray: "#eeeeee",
+
+	red: "red.500",
+	bgRed: "red.300",
 };

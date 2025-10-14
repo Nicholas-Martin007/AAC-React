@@ -1,10 +1,8 @@
 import { KISAH_URL } from "../Settings/DatabaseURL";
 import { useCardStore } from "../Store/useCardStore";
 
-export const addRatings = async ({ ratings }) => {
-	const cardStore = useCardStore.getState(); // Get store state
-	const kisahId = cardStore.kisahId;
-
+export const addRatings = async ({ kisahId, ratings }) => {
+	console.log(kisahId);
 	if (!kisahId) {
 		console.error("No kisah_id available");
 		return;

@@ -9,6 +9,8 @@ import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { useSpeech } from "react-text-to-speech";
 import { GENERATE_URL } from "../../../Settings/DatabaseURL";
 import { useSpeakStore } from "../../../Store/useSpeakStore";
+import { AddIcon } from "@chakra-ui/icons";
+import { uploadImages } from "../../../utils/uploadImages";
 export function HomeActionButton({ isModalOpen, onModalOpen, onModalClose }) {
 	const cardStore = useCardStore();
 	const speakStore = useSpeakStore();
@@ -43,8 +45,7 @@ export function HomeActionButton({ isModalOpen, onModalOpen, onModalClose }) {
 		});
 
 		const result = await data.json();
-		cardStore.setStory(data.output_text);
-
+		cardStore.setStory(result.output_text);
 		if (result.kisah_id) {
 			cardStore.setKisahId(result.kisah_id);
 			console.log("Kisah ID saved:", result.kisah_id);
@@ -70,6 +71,13 @@ export function HomeActionButton({ isModalOpen, onModalOpen, onModalClose }) {
 			borderColor={colorList.darkGreen}
 			bgColor={colorList.white}
 		>
+			{/* <Flex h="33%" justify="center" align="center">
+				<ActionButton
+					title={"Upload Cards"}
+					icon={AddIcon}
+					onClick={() => uploadImages()}
+				/>
+			</Flex> */}
 			<Flex h="33%" justify="center" align="center">
 				<ActionButton
 					title={"Reset"}
@@ -79,7 +87,7 @@ export function HomeActionButton({ isModalOpen, onModalOpen, onModalClose }) {
 			</Flex>
 			<Flex h="33%" justify="center" align="center">
 				<ActionButton
-					title={"Suara"}
+					title={"Dengarkan"}
 					onClick={() => readCard()}
 					icon={HiMiniSpeakerWave}
 				/>
