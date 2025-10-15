@@ -11,109 +11,111 @@ import { GENERATE_URL } from "../../../Settings/DatabaseURL";
 import { useSpeakStore } from "../../../Store/useSpeakStore";
 import { AddIcon } from "@chakra-ui/icons";
 import { uploadImages } from "../../../utils/uploadImages";
+import { useNToast } from "../../../utils/Toast/NToast";
 export function HomeActionButton({ isModalOpen, onModalOpen, onModalClose }) {
-	const cardStore = useCardStore();
-	const speakStore = useSpeakStore();
-	const [isLoading, setIsLoading] = useState(false);
+    const cardStore = useCardStore();
+    const speakStore = useSpeakStore();
 
-	const { speechStatus, start } = useSpeech({
-		text: speakStore.text,
-		pitch: 1,
-		rate: 1,
-		volume: 1,
-		lang: "id-ID",
-	});
+    const showToast = useNToast();
+    const { speechStatus, start } = useSpeech({
+        text: speakStore.text,
+        pitch: 1,
+        rate: 1,
+        volume: 1,
+        lang: "id-ID",
+    });
 
-	const readCard = () => {
-		const text = cardStore.selectedCard.map((item) => item.label).join(" ");
-		speakStore.setText(text);
-		speakStore.setSpeaking(true);
-	};
+    const readCard = () => {
+        const text = cardStore.selectedCard.map((item) => item.label).join(" ");
+        speakStore.setText(text);
+        speakStore.setSpeaking(true);
+    };
 
-	const resetCard = () => {
-		cardStore.setSelectedCard([]);
-	};
+    const resetCard = () => {
+        cardStore.setSelectedCard([]);
+    };
 
-	const generateStory = async () => {
-		const cards = cardStore.selectedCard.map((card) => {
-			return card.kartu_id;
-		});
-		const data = await fetch(GENERATE_URL, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ kartu_ids: cards }),
-		});
+    const generateStory = async () => {
+        const cards = cardStore.selectedCard.map((card) => {
+            return card.kartu_id;
+        });
+        const data = await fetch(GENERATE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ kartu_ids: cards }),
+        });
 
-		const result = await data.json();
-		cardStore.setStory(result.output_text);
-		if (result.kisah_id) {
-			cardStore.setKisahId(result.kisah_id);
-			console.log("Kisah ID saved:", result.kisah_id);
-		}
-	};
+        const result = await data.json();
+        cardStore.setStory(result.output_text);
+        if (result.kisah_id) {
+            cardStore.setKisahId(result.kisah_id);
+            cardStore.setPerplexityScore(result.perplexity_score);
+            console.log("Kisah ID saved:", result.kisah_id);
+        }
+    };
 
-	useEffect(() => {
-		if (speakStore.isSpeaking && speakStore.text) {
-			start();
-			speakStore.setSpeaking(false);
-		}
-	}, [speakStore.text, speakStore.isSpeaking]);
+    useEffect(() => {
+        if (speakStore.isSpeaking && speakStore.text) {
+            start();
+            speakStore.setSpeaking(false);
+        }
+    }, [speakStore.text, speakStore.isSpeaking]);
 
-	return (
-		<Box
-			w="276px"
-			h="218px"
-			pos="fixed"
-			top="0"
-			right="0"
-			p={"4px"}
-			borderLeft={"2px"}
-			borderColor={colorList.darkGreen}
-			bgColor={colorList.white}
-		>
-			{/* <Flex h="33%" justify="center" align="center">
+    return (
+        <Box
+            w="276px"
+            h="218px"
+            pos="fixed"
+            top="0"
+            right="0"
+            p={"4px"}
+            borderLeft={"2px"}
+            borderColor={colorList.darkGreen}
+            bgColor={colorList.white}
+        >
+            {/* <Flex h="33%" justify="center" align="center">
 				<ActionButton
 					title={"Upload Cards"}
 					icon={AddIcon}
 					onClick={() => uploadImages()}
 				/>
 			</Flex> */}
-			<Flex h="33%" justify="center" align="center">
-				<ActionButton
-					title={"Reset"}
-					icon={MdRefresh}
-					onClick={() => resetCard()}
-				/>
-			</Flex>
-			<Flex h="33%" justify="center" align="center">
-				<ActionButton
-					title={"Dengarkan"}
-					onClick={() => readCard()}
-					icon={HiMiniSpeakerWave}
-				/>
-			</Flex>
-			<Flex h="33%" justify="center" align="center">
-				<ActionButton
-					title={
-						isLoading ? (
-							<Flex align="center" gap={2}>
-								<Spinner size="sm" color="green.500" />
-								Loading...
-							</Flex>
-						) : (
-							"Buat Kisah Sosial"
-						)
-					}
-					icon={MdAutoStories}
-					onClick={async () => {
-						if (cardStore.kar) setIsLoading(true);
-						await generateStory();
-						setIsLoading(false);
-						onModalOpen();
-					}}
-				/>
-			</Flex>
-			<StoryModal isOpen={isModalOpen} onClose={onModalClose} />
-		</Box>
-	);
+            <Flex h="33%" justify="center" align="center">
+                <ActionButton
+                    title={"Reset"}
+                    icon={MdRefresh}
+                    onClick={() => resetCard()}
+                />
+            </Flex>
+            <Flex h="33%" justify="center" align="center">
+                <ActionButton
+                    title={"Dengarkan"}
+                    onClick={() => readCard()}
+                    icon={HiMiniSpeakerWave}
+                />
+            </Flex>
+            <Flex h="33%" justify="center" align="center">
+                <ActionButton
+                    title={"Buat Kisah Sosial"}
+                    icon={MdAutoStories}
+                    onClick={async () => {
+                        if (cardStore.selectedCard.length === 0) {
+                            showToast({
+                                title: "Gagal",
+                                description: "Input Kartu minimal 1",
+                                status: "error",
+                            });
+
+                            return;
+                        }
+                        cardStore.setIsLoading(true);
+                        await generateStory();
+                        cardStore.setIsLoading(false);
+                        onModalOpen();
+                    }}
+                />
+            </Flex>
+            <StoryModal isOpen={isModalOpen} onClose={onModalClose} />
+        </Box>
+    );
 }

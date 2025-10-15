@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { KARTU_URL } from "../Settings/DatabaseURL";
 import { fetchData } from "../Actions/CRUD";
 
-const setLoading = (set, get, value) => {
+const setIsLoading = (set, get, value) => {
 	set((state) => ({
 		isLoading: value,
 	}));
@@ -32,6 +32,12 @@ const setKisahId = (set, get, value) => {
 	}));
 };
 
+const setPerplexityScore = (set, get, value) => {
+	set((state) => ({
+		perplexityScore: value
+	}))
+}
+
 const fetchCards = async (set, get, value) => {
 	const data = await fetchData(KARTU_URL);
 	const result = data.map((item) => ({
@@ -50,6 +56,7 @@ export const useCardStore = create((set, get) => ({
 	selectedCard: [],
 	story: "",
 	kisahId: null,
+	perplexityScore: 0.0,
 
 	refresh: false,
 
@@ -59,8 +66,8 @@ export const useCardStore = create((set, get) => ({
 	setSelectedCard: (value) => {
 		setSelectedCard(set, get, value);
 	},
-	setLoading: (value) => {
-		setLoading(set, get, value);
+	setIsLoading: (value) => {
+		setIsLoading(set, get, value);
 	},
 	setStory: (value) => {
 		setStory(set, get, value);
@@ -74,7 +81,12 @@ export const useCardStore = create((set, get) => ({
 		setKisahId(set, get, value);
 	},
 
+	setPerplexityScore: (value) => {
+		setPerplexityScore(set, get, value)
+	},
+
 	triggerRefresh: () => {
 		set((state) => ({ refresh: !state.refresh }));
 	},
+
 }));
