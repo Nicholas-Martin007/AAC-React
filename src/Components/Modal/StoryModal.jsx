@@ -223,9 +223,9 @@ function SocialStorySection({ story }) {
 					Kisah Sosial
 				</Text>
 				<Button
-					leftIcon={<HiMiniSpeakerWave />}
+					w={"130px"}
+					rightIcon={<HiMiniSpeakerWave />}
 					colorScheme="green"
-					size="sm"
 					onClick={readStories}
 					isDisabled={!story}
 				>
@@ -324,13 +324,7 @@ function RatingSection({
 		<Box>
 			{humanRating === 0 ? (
 				<Box>
-					<Text
-						fontSize="md"
-						fontWeight="medium"
-						color="gray.700"
-						mb={3}
-						textAlign="center"
-					>
+					<Text mb={3} textAlign="center">
 						Beri Penilaian Kamu:
 					</Text>
 					<Flex justify="center" mb={2}>
@@ -380,22 +374,19 @@ function CloseButton({ onClose }) {
 		<Box>
 			<Flex justify="flex-end">
 				<Button
-					justifyContent="flex-start"
-					px="12px"
-					py="8px"
+					w="130px"
 					colorScheme="red"
 					bg={colorList.red}
 					onClick={onClose}
 				>
-					<Flex gap={2} alignItems="center">
-						<Text
-							fontSize="16px"
-							fontWeight="semibold"
-							letterSpacing={1}
-						>
-							Tutup
-						</Text>
-					</Flex>
+					<Text
+						textAlign={"center"}
+						fontSize="18px"
+						fontWeight="semibold"
+						letterSpacing={1}
+					>
+						Tutup
+					</Text>
 				</Button>
 			</Flex>
 		</Box>

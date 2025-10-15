@@ -13,10 +13,10 @@ export default function NavigationBar() {
 
 	useEffect(() => {
 		setPage([
-			{ title: "Home", link: "/Home" },
-			{ title: "Custom", link: "/Custom" },
-			{ title: "History", link: "/History" },
-			{ title: "About", link: "/About", isBorder: false },
+			{ title: "Beranda", link: "/Home" },
+			{ title: "Kustom", link: "/Custom" },
+			{ title: "Riwayat", link: "/History" },
+			{ title: "Tentang", link: "/About", isBorder: false },
 		]);
 	}, []);
 

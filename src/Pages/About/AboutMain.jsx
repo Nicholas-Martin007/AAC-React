@@ -7,8 +7,10 @@ import {
 	Heading,
 } from "@chakra-ui/react";
 import MainContainer from "../../Components/Container/MainContainer";
+import { usePageStore } from "../../Store/usePageStore";
 
 export default function AboutMain() {
+	const pageStore = usePageStore();
 	const colorList = {
 		white: "#FFFFFF",
 		green: "#10B981",
@@ -30,7 +32,7 @@ export default function AboutMain() {
 
 	return (
 		<MainContainer>
-			<Box p={6}>
+			<Box p={6} mx={!pageStore.isOpen ? "100px" : 0}>
 				<Heading mb={6}>Tentang</Heading>
 
 				<SimpleGrid columns={2} spacing={8}>

@@ -9,7 +9,6 @@ export const addImage = async ({ label, gambar }) => {
 			kategori: "custom",
 		});
 		console.log(`Added image: ${label}`);
-		console.log("kategori", "custom");
 		return true;
 	} catch (error) {
 		console.error(`Error adding ${label}:`, error.message);

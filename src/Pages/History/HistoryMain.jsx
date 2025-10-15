@@ -16,9 +16,11 @@ import { useEffect, useState } from "react";
 import { useSocialStoryStore } from "../../Store/useSocialStoryStore";
 import AACCard from "../../Components/Card/AACCard";
 import StoryModal from "../../Components/Modal/StoryModal";
+import { usePageStore } from "../../Store/usePageStore";
 
 export default function HistoryMain() {
 	const socialStoryStore = useSocialStoryStore();
+	const pageStore = usePageStore();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [selectedStory, setSelectedStory] = useState(null);
 
@@ -26,7 +28,7 @@ export default function HistoryMain() {
 		socialStoryStore.fetchStories();
 	}, []);
 
-	const handleViewDetails = (story) => {
+	const checkDetail = (story) => {
 		setSelectedStory(story);
 		onOpen();
 	};
@@ -44,11 +46,11 @@ export default function HistoryMain() {
 	return (
 		<>
 			<MainContainer>
-				<Box p={6}>
+				<Box p={6} mx={!pageStore.isOpen ? "100px" : 0}>
 					<Heading mb={6}>Riwayat</Heading>
 
 					<SimpleGrid
-						templateColumns="150px 2fr 2fr 50px"
+						templateColumns="150px 2fr 2fr"
 						spacing={4}
 						bg={colorList.darkGreen}
 						p={4}
@@ -57,10 +59,9 @@ export default function HistoryMain() {
 						fontWeight="bold"
 						mb={4}
 					>
-						<Text fontSize="sm">Tanggal</Text>
-						<Text>Kartu yang digunakan</Text>
-						<Text>Kisah yang Dihasilkan</Text>
-						<Text fontSize="sm">Detail</Text>
+						<Text letterSpacing={1}>Tanggal</Text>
+						<Text letterSpacing={1}>Kartu yang digunakan</Text>
+						<Text letterSpacing={1}>Kisah Sosial</Text>
 					</SimpleGrid>
 
 					{!socialStoryStore.stories ||
@@ -75,14 +76,16 @@ export default function HistoryMain() {
 							)
 							.map((item, index) => (
 								<SimpleGrid
+									onClick={() => checkDetail(item)}
 									key={item.kisah_id}
-									templateColumns="150px 2fr 2fr 50px"
+									templateColumns="150px 2fr 2fr"
 									spacing={4}
 									p={4}
 									bg={index % 2 === 0 ? "white" : "gray.50"}
 									_hover={{
 										bg: "green.50",
 										boxShadow: "sm",
+										cursor: "pointer",
 									}}
 									borderRadius="md"
 									alignItems="center"
@@ -99,7 +102,7 @@ export default function HistoryMain() {
 													hour: "2-digit",
 													minute: "2-digit",
 											  })
-											: "N/A"}
+											: "-"}
 									</Text>
 
 									<Flex
@@ -133,33 +136,15 @@ export default function HistoryMain() {
 													fontSize="14px"
 													fontWeight="bold"
 												>
-													... (
+													... masih ada{" "}
 													{item.kartu_list.length - 5}{" "}
-													more)
+													lagi
 												</Text>
 											)}
 									</Flex>
-
 									<Text noOfLines={2}>
-										{item.output_text || "N/A"}
+										{item.output_text || "-"}
 									</Text>
-									<Center>
-										<Button
-											onClick={() =>
-												handleViewDetails(item)
-											}
-											aria-label="View details"
-											title="View Details"
-											color={"green"}
-											bg="transparent"
-											_hover={{
-												bg: "transparent",
-												transform: "scale(1.1)",
-											}}
-										>
-											<ViewIcon boxSize={8} />
-										</Button>
-									</Center>
 								</SimpleGrid>
 							))
 					)}

@@ -43,14 +43,14 @@ export default function CustomMain({ title, children }) {
 	return (
 		<MainContainer>
 			{customStore.mode === "view" ? (
-				<Box p={6}>
-					<Heading mb={6}>Custom</Heading>
+				<Box p={6} mx={!pageStore.isOpen ? "100px" : 0}>
+					<Heading mb={6}>Kustom</Heading>
 
-					<SimpleGrid columns={pageStore.isOpen ? 5 : 7} spacing={4}>
+					<SimpleGrid columns={5} spacing={4}>
 						{cardStore.cards.filter(
 							(item) => item.kategori === "custom"
 						).length === 0 ? (
-							<Center>No cards available</Center>
+							<Center>Tidak ada kartu</Center>
 						) : (
 							cardStore.cards
 								.filter((item) => item.kategori === "custom")
@@ -157,19 +157,11 @@ export function AddCardButton({ customStore, onClick }) {
 					customStore.setMode("add");
 				}}
 			>
-				<Text
-					fontSize="84px"
-					fontWeight="200"
-					color={colorList.darkGray}
-				>
+				<Text fontSize="84px" color={colorList.darkGray}>
 					+
 				</Text>
-				<Text
-					fontSize="24px"
-					fontWeight="500"
-					color={colorList.darkGray}
-				>
-					Add New Card
+				<Text fontSize="24px" color={colorList.darkGray}>
+					Tambah Kartu
 				</Text>
 			</Card>
 		</Box>

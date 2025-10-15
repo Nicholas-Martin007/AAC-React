@@ -68,7 +68,7 @@ export function HomeChoose({ onSelectType }) {
 			<SimpleGrid columns={2} spacing={16}>
 				<AACCard
 					card={{
-						label: "Default Cards",
+						label: "Kartu Standar",
 						gambar: "/default.png",
 					}}
 					style={{
@@ -81,7 +81,7 @@ export function HomeChoose({ onSelectType }) {
 				/>
 				<AACCard
 					card={{
-						label: "Custom Cards",
+						label: "Kartu Kustom",
 						gambar: "/custom.png",
 					}}
 					style={{
@@ -101,9 +101,17 @@ export function HomeCardList({ cardType, setCardType, selectCard }) {
 	const pageStore = usePageStore();
 	const cardStore = useCardStore();
 
+	const cards = cardStore.cards.filter((item) => {
+		if (cardType === "custom") {
+			return item.kategori === "custom";
+		} else {
+			return item.kategori === "default";
+		}
+	});
+
 	return (
-		<Box>
-			<SimpleGrid columns={pageStore.isOpen ? 5 : 7} p={4} spacing={4}>
+		<Box p={6} mx={!pageStore.isOpen ? "100px" : 0}>
+			<SimpleGrid columns={5} p={4} spacing={4}>
 				<Box position="relative" display="flex">
 					<AACCard
 						card={{
@@ -119,39 +127,27 @@ export function HomeCardList({ cardType, setCardType, selectCard }) {
 						onClick={() => setCardType("")}
 					/>
 				</Box>
-				{cardStore.cards.length === 0 ? (
-					<Center>No cards available</Center>
+				{cards.length === 0 ? (
+					<Center>Tidak ada Kartu</Center>
 				) : (
-					cardStore.cards
-						.filter((item) => {
-							if (cardType === "custom") {
-								return item.kategori === "custom";
-							} else if (cardType === "default") {
-								return (
-									item.kategori === "default" ||
-									!item.kategori
-								);
-							}
-							return true;
-						})
-						.map((item, index) => (
-							<Box
-								position="relative"
-								display="flex"
-								onClick={() => selectCard(item)}
-							>
-								<AACCard
-									key={index}
-									card={item}
-									style={{
-										h: "300px",
-										w: "240px",
-										cardH: "220px",
-										fontSize: "24px",
-									}}
-								/>
-							</Box>
-						))
+					cards.map((item, index) => (
+						<Box
+							position="relative"
+							display="flex"
+							onClick={() => selectCard(item)}
+						>
+							<AACCard
+								key={index}
+								card={item}
+								style={{
+									h: "300px",
+									w: "240px",
+									cardH: "220px",
+									fontSize: "24px",
+								}}
+							/>
+						</Box>
+					))
 				)}
 			</SimpleGrid>
 			<Box h={"36px"} />
