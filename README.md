@@ -1,70 +1,81 @@
-# Getting Started with Create React App
+# AAC Frontend – React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Repository ini berisi **frontend aplikasi AAC (Augmentative and Alternative Communication)** yang dibangun menggunakan **React.js**. Frontend ini berfungsi sebagai antarmuka pengguna untuk berinteraksi dengan backend berbasis Django dan model LLM.
 
-## Available Scripts
+Untuk mendapatkan **full experience aplikasi AAC**, silakan gunakan repository berikut:
 
-In the project directory, you can run:
+* **Backend (Django + LLM API)**: [https://github.com/Nicholas-Martin007/Backend-LLM-Django](https://github.com/Nicholas-Martin007/Backend-LLM-Django)
+* **Fine-Tuned LLM (Python)**: [https://github.com/Nicholas-Martin007/AAC-Story-Generation](https://github.com/Nicholas-Martin007/AAC-Story-Generation)
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🖥️ System Requirements
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Untuk menjalankan frontend React secara optimal, disarankan menggunakan spesifikasi berikut:
 
-### `npm test`
+* **Processor**: Intel Core i5 (atau setara)
+* **RAM**: 8 GB (16 GB direkomendasikan)
+* **Browser**: Chrome / Edge versi terbaru
+* **Node.js**: v18 atau lebih baru
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+> ⚠️ Spesifikasi lebih tinggi direkomendasikan jika frontend dijalankan bersamaan dengan backend LLM.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ⚙️ Setup & Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Pastikan **Node.js** dan **npm** telah terpasang. Setelah itu, jalankan perintah berikut:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+git clone https://github.com/Nicholas-Martin007/AAC-React.git
+cd AAC-React
+npm install
+```
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🚀 Running Frontend Server
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Setelah instalasi selesai, jalankan frontend dengan perintah:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Secara default, aplikasi akan berjalan pada:
 
-## Learn More
+```text
+http://localhost:3000/
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Frontend ini akan berkomunikasi langsung dengan backend Django untuk proses inferensi LLM dan manajemen data.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## 🔗 Backend Integration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Pastikan backend Django telah berjalan terlebih dahulu:
 
-### Analyzing the Bundle Size
+```text
+http://127.0.0.1:8000/
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Konfigurasi endpoint API dapat disesuaikan pada file environment atau konfigurasi service API di dalam project React.
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📦 Dependencies
 
-### Advanced Configuration
+Seluruh dependency frontend dikelola menggunakan **npm** dan dapat dilihat pada file:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```text
+package.json
+```
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 📘 Documentation
 
-### `npm run build` fails to minify
+Panduan penggunaan aplikasi AAC secara lengkap dapat dilihat pada:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* **Manual Book**: `535220027_Manual Book.pdf`
